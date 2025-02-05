@@ -251,7 +251,11 @@ import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
     const numbers = [1, 2, 3, 4];
     const fruits = ["apple", "orange", "banana"];
     /*** Object */
-    const person = { name: "John", age: 30 };
+    const person = {
+      name: "John",
+      age: 30,
+      greet: function () { }
+    };
     /*** Maps */
     const map = new Map();
     map.set('name', 'Mary');
@@ -302,20 +306,50 @@ import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
   /** 26.  aysnc/await */
   (function () {
     /***Async function */
-    async function fetchData(){
-
+    async function fetchData() {
+      const response = await fetch("http://macaodaily.com/html/2025-02/05/node_2.htm")
+      const data = await response.text();
+      return data;
     }
     fetchData()
-    .then()
-    .catch();
+      .then(data => console.log(data.slice(0, 100)))
+      .catch(error => console.log(error));
+  })();
+  (function () {
     /***Error Handling */
-    
+    async function fetchData() {
+      try {
+        const response = await fetch("http://macaodaily.com/html/2025-02/05/node_2.htm")
+        const data = await response.text();
+        return data;
+      } catch (error) {
+        console.log('error', error);
+      }
+    }
+    function processData(data) {
+      return 1;
+    }
     /***Chaining Promises with aysnc /await */
-
+    async function fetchAndProcessData() {
+      const data = await fetchData();
+      const result = processData(data);
+      return result;
+    }
   })();
   /** 27.  Data Structures */
   (function () {
-
+    /***Arrays Objects Maps Sets*/
+    /***Queues and Stacks:*/
+    /***Queues FIFO */
+    const queue = [];
+    queue.push('a');
+    queue.push('b');
+    queue.shift();
+    /***Stacks LIFO */
+    const stack = [];
+    stack.push('a');
+    stack.push('b');
+    stack.pop();
   })();
   /** 28.  Costly Operations & Big 0 Notation*/
   (function () {
@@ -327,7 +361,51 @@ import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
   })();
   /** 30. Inheritance,Polymorphism,and Code Reusability */
   (function () {
-
+    /*** Inheritance */
+    class Animal {
+      constructor(name) {
+        this.name = name;
+      }
+      speak() {
+        console.log(`${this.name} makes a sound.`)
+      }
+    }
+    class Dog extends Animal {
+      constructor(name, breed) {
+        super(name);
+        this.breed = breed;
+      }
+      speak() {
+        console.log(`${this.name} barks.`)
+      }
+    }
+    const myDog = new Dog('Max', 'Labrador');
+    myDog.speak();
+    /*** Polymorphism */
+    class Shape {
+      area() { return 0; }
+    }
+    class Square extends Shape {
+      constructor(side) {
+        super();
+        this.side = side;
+      }
+      area() {
+        return this.side * this.side;
+      }
+    }
+    class Circle extends Shape {
+      constructor(radius) {
+        super();
+        this.radius = radius;
+      }
+      area() {
+        return this.radius * this.radius * Math.PI;
+      }
+    }
+    const square = new Square(5);
+    const circle = new Circle(5);
+    console.log(square.area(), circle.area());
   })();
   /** 31.  Design Patterns*/
   (function () {
@@ -335,7 +413,37 @@ import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
   })();
   /** 32.  Partial Application,Currying,Composition, and Pipe*/
   (function () {
-
+    /*** Partial Application */
+    function sum(a,b){
+      return a+b;
+    }
+    const sum5=sum.bind(null,5);
+    console.log(sum5(3)); //print 8
+  })();
+  (function(){
+    /*** Currying */
+    function sum(a){
+      return function(b){
+        return a+b;
+      };
+    }
+    const sum5=sum(5);
+    console.log(sum5(3));
+  })();  
+  (function(){
+    /*** Composition */
+    function double(x){
+      return x*2;
+    }
+    function increment(x){
+      return x+1;
+    }
+    const doubleIncrement=x=>increment(double(x));
+    console.log(doubleIncrement(3))
+    /*** Pipe */
+    const pipe=(...funcs)=>input=>funcs.reduce((value,func)=>func(value),input);
+    const result=pipe(double,increment,double)(3);
+    console.log(result)
   })();
   /** 33. Clean Code */
   (function () {
@@ -343,69 +451,97 @@ import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
   })();
   /** 34.  Error Handling*/
   (function () {
-
+    try{
+      const result=divide(10,0);
+    }catch(error){
+      console.error("Error",error.message);
+    }
   })();
   /** 35. ES6 Modules */
   (function () {
-
+    //import {PI,sum} from './module_35.js'
+    //import Person from './module_35.js';
+    //PI;
+    //sum(5,3);
+    //const person=new PermissionStatus('John');
+    //import * as module from './module_35.js';
+    //const person=new module.default('Maria');
+    //import Person from './module.js';
   })();
-  /** 36.  */
+  /** 36. Ternary Operator */
+  (function () {
+    /*** condition? true_expr:false_expr */
+  })();
+  /** 37. Spread and Rest Operators (...) */
+  (function () {
+    /*** Spread */
+    const originalArr=[1,2,3];
+    const copiedArr=[...originalArr];
+    const arr1=[1,2,3];
+    const arr2=[4,5,6];
+    const combined=[...arr1,...arr2];
+    const originObj={a:1,b:2};
+    const copiedObj={...originObj};
+    const obj1={a:1,b:2};
+    const obj2={b:3,c:4};
+    const commbined_obj={...obj1,...obj2};
+    /*** Rest in functions */
+    function sum(...numbers){
+      return numbers.reduce((total,num)=>total+num,0);
+    }
+    sum(1,2,3,4);
+    /*** Rest in destructuring */
+    const [first,...rest]=[1,2,3,4];
+  })();
+  /** 38.  Destructuring */
   (function () {
 
   })();
-  /** 37.  */
+  /** 39.  Template Literals */
   (function () {
 
   })();
-  /** 38.  */
+  /** 40.  Arrow Functions */
   (function () {
 
   })();
-  /** 39.  */
+  /** 41.  Array Methods(forEach,some,every,find,findIndex,etc.)*/
   (function () {
 
   })();
-  /** 40.  */
+  /** 42. String Methods(split,trim,replace,etc.)*/
   (function () {
 
   })();
-  /** 41.  */
+  /** 43.  Object Methods(keys,values,entries,etc.)*/
   (function () {
 
   })();
-  /** 42.  */
+  /** 44. Math Methods(floor,ceil,random,etc.) */
   (function () {
 
   })();
-  /** 43.  */
+  /** 45. JSON & Object Serialization/Deserialization */
   (function () {
 
   })();
-  /** 44.  */
+  /** 46.  Fetch API and AJAX*/
   (function () {
 
   })();
-  /** 45.  */
+  /** 47. LocalStorage SessionStorage */
   (function () {
 
   })();
-  /** 46.  */
+  /** 48. WebSockets and Socket.IO */
   (function () {
 
   })();
-  /** 47.  */
+  /** 49. Canvas and WebGL */
   (function () {
 
   })();
-  /** 48.  */
-  (function () {
-
-  })();
-  /** 49.  */
-  (function () {
-
-  })();
-  /** 50.  */
+  /** 50.  Testing with Jest or Macha */
   (function () {
 
   })();
