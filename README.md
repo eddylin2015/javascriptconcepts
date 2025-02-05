@@ -1,4 +1,4 @@
-# javascriptconcepts
+# javascript concepts for developer
 
 50 Javascript 
 
@@ -8,7 +8,24 @@ Devdeloper
 
 Should Know
 
-Note
+作者: Hernando Abella
 
-閱讀筆記
+My JS Note
 
+## 我的閱讀筆記
+
+
+
+該書寫給使用JS語言基礎開發者總結手冊,精簡干貨.
+
+我先整理英文內容,之後整理有用資料,之後計劃更改中文標註。
+
+## 書本範例
+
+```cmd
+node a.js
+```
+
+
+
+乙已年春
