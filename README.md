@@ -23,7 +23,7 @@ My JS Note
 ## 書本範例
 
 ```cmd
-node a.js
+node example.js
 ```
 
   /** 1.Call Stack LIFO */   
