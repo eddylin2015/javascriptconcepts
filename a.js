@@ -1,5 +1,4 @@
 'use strict'
-
 var content = `
   1.Call Stack LIFO
   2.Primitive Types
@@ -11,6 +10,7 @@ var content = `
   8.IIFE Modlues and Namespaces
   `;
 var Helo = "50 Javascript Concepts";  /* 6. Variable Scop */
+const url_="http://macaodaily.com/html/2025-02/05/node_2.htm";
 import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
 (function () {
   /** 6.Scope */
@@ -495,56 +495,221 @@ import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
   })();
   /** 38.  Destructuring */
   (function () {
-
+    /*** Destructuring with Arrays： */
+    const numbers=[1,2,3,4,5];
+    const [first,second,...rest]=numbers;
+    /*** Destructuring with Object： */
+    const person={name:'Ana',age:30,city:"Madrid"};
+    const {name,age}=person;
+    /*** Nested Destructing: */
+    const product={
+      name:'T-shirt',
+      price:20,
+      details:{
+        color:'red',
+        size:['s','m','l']
+      }
+    };
+    const {name_,details:{color,size}}=product;
   })();
-  /** 39.  Template Literals */
+  /** 39.  Template Literals `${value}`*/
   (function () {
 
   })();
   /** 40.  Arrow Functions */
   (function () {
-
+     /*** Basic Syntax */
+     function sum(a,b){
+      return a+b;
+     }
+     // Equivalent arrow function
+     const arrowSum=(a,b)=>{
+       return a+b;
+     };
+     /*** Implicit Return */
+     const arrowSum_=(a,b)=> a+b;
+     /*** Single Parameter */
+     const square=num=>num*num;
+     /*** No Parameter */
+     const getCurrentDate=()=>new Date();
+     /*** Using this */
+     const person={
+      name:'John',
+      greet:function(){
+        setTimeout(()=>{
+          console.log(`Helo, I'am ${this.name}`)
+        },1000);
+      }
+     };
+     person.greet();
   })();
   /** 41.  Array Methods(forEach,some,every,find,findIndex,etc.)*/
+  /*** https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort */  
   (function () {
-
+    /*** Array.length */
+    /*** Array.push(elm1,elm2,...) */
+    /*** Array.pop() */
+    /*** Array.shift() */
+    /*** Array.unshift(elm1,elm2,...) */
+    /*** Array.forEach(callback(curValue,idex,array)) */
+    const numbers=[1,2,3,4];
+    numbers.forEach(n=>console.log(n));
+    /*** some method checks Result: bool */
+    const hasOdd=numbers.some(n=>n %2 !==0);
+    /*** every method checks Result: bool */
+    const allEven=numbers.every(n=>n % 2 ===0);
+    const people=[{name:'John',age:20},{name:'May',age:21},{name:'Maria',age:30}];
+    const person=people.find(n=>n.age>25);//Result: {name:'Maria',age:30}
+    const person_index=people.findIndex(n=>n.age>25);//Result: 2
+    /*** Array.sort() */
+    const months = ['March', 'Jan', 'Feb', 'Dec'];
+    months.sort();
+    console.log(months); 
+    // [...numbers] creates a shallow copy, so sort() does not mutate the original
+    const sorted = [...numbers].sort((a, b) => a - b);   
   })();
   /** 42. String Methods(split,trim,replace,etc.)*/
   (function () {
+    /*** String.length */
+    /*** String.charAt(index) */
+    /*** String.concat(str1,str2,...) */
+    /*** String.Indexof(substr,start); if not found -1 */
+    /*** String.substring(start,end) exclude end char*/
+    const text='0123456789ABCDEF'; 
+    console.log(text,text.substring(6,11));// output: 6789A
+    /*** String.split(separator,limit) */
+    /*** String.trim() */
+    /*** String.replace(search,replacement) */
+    /*** String.toUpperCase() toLowerCase() */
+
 
   })();
   /** 43.  Object Methods(keys,values,entries,etc.)*/
   (function () {
-
+    const obj={a:1,b:2,c:3} ;
+    const keys=Object.keys(obj);
+    const values=Object.values(obj);
+    const entries=Object.entries(obj);
+    // [['a',1],['b',2],['c',3]]
+    const target={a:1,b:2};
+    const source={b:3,c:4}
+    Object.assign(target,source);
+    obj.hasOwnProperty('a')
+    obj.hasOwnProperty('c')
+    Object.freeze(obj);
+    //obj.a=10;//No effect,throw Error
+    const properties=Object.getOwnPropertyNames(obj);
   })();
   /** 44. Math Methods(floor,ceil,random,etc.) */
   (function () {
-
+    console.log(Math.floor(5.7));
+    console.log(Math.ceil(5.2));
+    console.log(Math.round(5.2));
+    console.log(Math.round(5.7));
+    console.log(Math.max(1,2,3,5.7));
+    console.log(Math.min(1,2,3,5.7));
+    console.log(Math.pow(2,3));
+    console.log(Math.sqrt(25));
+    console.log(Math.abs(-25));
   })();
   /** 45. JSON & Object Serialization/Deserialization */
   (function () {
-
+    console.log(JSON.parse(JSON.stringify({name:'John',age:20})));
   })();
   /** 46.  Fetch API and AJAX*/
-  (function () {
-
+  (async function () {
+    /*** Fetch API Example */
+    const response = await fetch(url_)
+    const data = await response.text();
+    console.log(data.slice(0, 100));
+    fetch(url_)
+      .then(response=>response.text())
+      .then(data=> console.log(data.slice(0,100)))
+      .catch(error=>console.error("Error",error));
+    /*** AJAX API Example 
+    const xhr=new XMLHttpRequest();
+    xhr.open('GET',url_,true);
+    xhr.onreadystatechange=function(){
+      if(xhr.readyState===4&& xhr.status===2000){
+        const data=xhr.responseText;
+        console.log(data);
+      }
+    };
+    xhr.send(); */
   })();
   /** 47. LocalStorage SessionStorage */
   (function () {
-
+    /*** Example of LocalStorage 
+     * localStorage.setItem('name','John');
+     * const name=localStorage.getItem('name');
+     * localStorage.removeItem('name');
+    */
+    /*** Example of SessionStorage 
+     * SessionStorage.setItem('language','Spanish');
+     * const language=SessionStorage.getItem('language');
+     * SessionStorage.removeItem('language');
+    */
   })();
   /** 48. WebSockets and Socket.IO */
   (function () {
-
+    /*** Example of WebSockets 
+     * // client
+     * const socket=new WebSocket('ws://localhost:3000');
+     * socket.addEventListener('open',()=>{socket.send('Helo,server');})
+     * socket.addEventListener('message',event=>{console.log('from server:',event.data);})
+     * // server(node.js)
+     * const WebSocket=require('ws');
+     * const wss=new WebSocket.server({port:3000});
+     * wss.on('connection',ws=>{
+     *   ws.send('Welcome!');
+     *   ws.on('message',message=>{
+     *      console.log('from client',message);
+     *      ws.send('received:'+message)
+     *   });
+     * });
+    */
+    /*** Example of Socket.IO 
+     * // client
+     * const socket=io('http://localhost:3000');
+     * socket.on('connect',()=>{socket.emit('message','Helo,server');});
+     * socket.on('response',data=>{console.log('from server:',data);});
+     * // server(node.js)
+     * const http=require('http');
+     * const server=http.createServer();
+     * const io=require('socket.io')(server);
+     * io.on('connection',ws=>{
+     *   ws.emit('response','Welcome!');
+     *   ws.on('message',message=>{
+     *      console.log('from client',message);
+     *      ws.emit('response','received:'+message);
+     *   });
+     *   server.listen(3000);
+     * });
+    */
   })();
   /** 49. Canvas and WebGL */
   (function () {
+    /*** Canvas
+     * <canavs id='myCanvas' width='40' height='30'></canavs>
+     * <script>
+     * const canavs=document.getelementById('myCanvas');
+     * const context=canvas.getContext('2d');
+     * context.fillstyle='blue';
+     * context.fillRect(4,4,10,10);
+     * </script>
+     */
+    /*** WebGL
+     * <canavs id='myCanvas' width='40' height='30'></canavs>
+     * <script>
+     * const canavs=document.getelementById('myCanvas');
+     * const gl=canvas.getContext('webgl');
+     * </script>
+     */
 
   })();
-  /** 50.  Testing with Jest or Macha */
+  /** 50.  Testing with Jest or Mocha */
   (function () {
-
+    /*** Example with Jest */
+    /*** Example with Mocha,Chai,Sinon */
   })();
-
-
 })();
