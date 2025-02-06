@@ -1,23 +1,13 @@
 'use strict'
-var content = `
-  1.Call Stack LIFO
-  2.Primitive Types
-  3.Value Types and Ref Types(Literal Obj,Array,Func,UD Obj)
-  4.Implicit,Explicit,Nominal,Struct,and Duck Typing
-  5.== vs === vs typeof()
-  6.Func Scope, Block, Lexical
-  7.Expression vs Statement
-  8.IIFE Modlues and Namespaces
-  `;
-var Helo = "50 Javascript Concepts";  /* 6. Variable Scop */
-const url_="http://macaodaily.com/html/2025-02/05/node_2.htm";
 import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
+var Helo = "50 Javascript Concepts";  /* 6. Variable Scop */
+const url_="http://macaodaily.com/html/2025-02/05/node_2.htm"; /* fetch(url_) */
 (function () {
   /** 6.Scope */
   (function () {
     console.log(Helo);
   })();
-  /* 8.Module */
+  /** 8.Module */
   (function () {
     /*** module_a*/
     greeting();
@@ -30,11 +20,11 @@ import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
     };
     MyNameSpace.func();
   })();
-  /* 9.Messge Queue & Event Loop */
+  /** 9.Messge Queue & Event Loop */
   (function () {
     setTimeout(function () { console.log("aysnc task completed.") }, 1000);
   })();
-  /**10.setTimeout,setInterval,requestAnimationFrame */
+  /** 10.setTimeout,setInterval,requestAnimationFrame */
   (function () {
     setTimeout(function () {
       console.log('Step after 1000 ms')
@@ -48,7 +38,7 @@ import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
       }
     }, 1000);
   })();
-  /* 12. Array Buffer */
+  /** 12. Array Buffer */
   (function () {
     /// Bitwise Oper, TypedArrays, Array Buffers
     /// & | ^XOR ~NOT << >>
@@ -61,11 +51,11 @@ import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
     // View the buffer as a 32-bit integer array
     console.log(intArr_);
   })();
-  /*13. Dom 
+  /** 13. Dom 
   const heading=document.querySelector('h1')
   heading.textContent='50 Javascript Concepts';
   */
-  /*14. Factories and Classess */
+  /** 14. Factories and Classess */
   (function () {
     function createPerson(name, age) {
       return {
@@ -91,7 +81,7 @@ import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
     const person2 = new Person('Jane', 25);
     person2.greet();
   })();
-  /**15 this call apply and bind */
+  /** 15 this call apply and bind */
   (function () {
     function greet(name) {
       console.log(`Helo,${name}! I'm ${this.name}`)
@@ -102,7 +92,7 @@ import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
     const greetPerson = greet.bind(person)
     greetPerson('Maria')
   })();
-  /**16 new,Constructor,instanceof,and Instances */
+  /** 16 new,Constructor,instanceof,and Instances */
   (function () {
     /**new */
     function Person(name, age) {
@@ -115,7 +105,7 @@ import { greeting } from './module_a.js'; /*8. Modlues and Namespaces */
     console.log(person1 instanceof Person);
     const person2 = new Person('Maria', 25);
   })();
-  /**17. Prototypal Inheritance & Prototype Chain */
+  /** 17. Prototypal Inheritance & Prototype Chain */
   (function () {
     /**Example of Prototypal Inheritance & Prototype Chain */
     // Define an 'Animal' constructor
