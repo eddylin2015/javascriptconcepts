@@ -14,16 +14,28 @@ My JS Note
 
 ## 我的閱讀筆記
 
-
-
 該書寫給使用JS語言基礎開發者總結手冊,精簡干貨.
 
 我先整理英文內容,之後整理有用資料,之後計劃更改中文標註。
 
+本書代碼 exmaple.js
+
+陣列代碼 ex_arr.js
+
+Matrix代碼 ex_linear.js
+
 ## 書本範例
+
+### 例子
 
 ```cmd
 node example.js
+```
+
+### 標題
+
+```cmd
+get-content example.js | findstr /c:"/** "
 ```
 
   /** 1.Call Stack LIFO */   

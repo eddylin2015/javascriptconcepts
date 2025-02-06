@@ -148,7 +148,7 @@ const url_="http://macaodaily.com/html/2025-02/05/node_2.htm"; /* fetch(url_) */
     dog.sound = 'Woof woof';
     dog.makeSound();
 
-    //Object.assign for combining or cloning objects.
+    // Object.assign for combining or cloning objects.
     // Object.assign(targetObject,sourceObj1,sourceObj2,...);
     // Example of Object.assign:
     const target = {};
