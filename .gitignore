@@ -1,4 +1,6 @@
 *.pdf
+bin/
+lib_/
 # Logs
 logs
 *.log
