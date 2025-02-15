@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MarkSi</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/stylesheets/bootstrap.min.css">
+    <!--link(rel='stylesheet', href='/stylesheets/main.css')-->
+    <script src="/static/javascripts/jquery.js"></script>
+    <script src="/static/javascripts/bootstrap.js"></script>
+    <script src="/static/javascripts/cool/grid_export.js">   </script>
+    <script src="/static/jquery-ui-dist/jquery-ui.min.js"></script>
+    <link href= "/static/jquery-ui-dist/jquery-ui.min.css" rel="stylesheet">
+    <script src="grid_v3.js"></script>
+    <link rel="stylesheet" href="/static/javascripts/cool/grid.css">
+    <style>
+        textarea {
+            min-width: 40px;
+            min-height: 30px;
+        }
+    </style>
+    <script>$(document).ready(function () {
+            BindingFunctions("editbtn", "savebtn", 'readmodebtn');
+            GenOriginalData();
+            $('#exportxls_button').click(function () { exportxls_button('EDUTBL'); });
+            $("#exportcsv_button").on('click', function (event) { exportcsv_button("EDUTBL"); });
+            $('td').filter(function () { return this.innerHTML.match(/^[0-9\s\.,]+$/); }).css('text-align', 'right');
+        });  </script>
+</head>
+
+<body>
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand"></div><a class="navbar-brand"><img src="DataViewGrid.png" width="50px"></a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/"> <span class="glyphicon">&#xe021</span></a></li>
+                <li><a href="/internal/attrollcall">DataViewGrid Component</a></li>
+            </ul>
+            <p class="navbar-text navbar-right"><span>LAM MOU &nbsp;<a href="/logout">(logout)</a></span></p>
+        </div>
+    </div>
+    <div><a class="btn btn-primary btn-sm" href="#" style="color:yellow;" id="editbtn">編輯</a><a
+            class="btn btn-primary btn-sm" href="#" style="color:yellow;" id="savebtn">儲存</a><a
+            class="btn btn-primary btn-sm" href="#" style="color:yellow;" id="readmodebtn">唯讀</a><a
+            class="btn btn-primary btn-sm" href="#" style="color:yellow;" id="exportcsv_button">匯出csv </a><a
+            class="btn btn-primary btn-sm" href="#" style="color:yellow;" id="exportxls_button">匯出xls </a></div>
+    <div class="container">
+        <style>
+            div.container {
+                margin: 0px;
+            }
+            input {
+                color: black
+            }
+
+            input[type="text"] {
+                border: 0
+            }
+
+            input[type="radio"] {
+                border: 1px solid #a9a9a9;
+                border-radius: .25em;
+                width: 1.5em;
+                height: 1.5em;
+            }
+
+            input[type="radio"]:disabled,
+            input[type="radio"]:disabled {
+                text-decoration: line-through;
+                cursor: not-allowed;
+                color: #FFF;
+            }
+        </style>
+        <script>function aaaa() {
+                let staf_ref = ""
+                let ori_list = []
+                let act = "add";
+                var table = document.getElementById("grp_list");
+                for (var i = 0, row; row = table.rows[i]; i++) {
+                    //for (var j = 0, col; col = row.cells[j]; j++) {  }
+                    ori_list.push(`${row.cells[0].innerHTML}`)
+                    if (row.cells[0].innerHTML == staf_ref) act = "update"
+                }
+                let cnt = document.getElementById("aa_li_cnt").value;
+                var reg = /^\d+$/;
+                if ("" != "") {
+                    if (cnt.match(reg) && (Number(cnt) > 0 && Number(cnt) < 100)) {
+                        $.post("", { cnt: cnt, act: act }, function (data) {
+                            let table_ctx = ""
+                            for (let r of JSON.parse(data)) {
+                                table_ctx += `<tr><td>${r.stud_ref}<td>${r.al_id}<td>${r.classno}<td>${r.cnt}`
+                            }
+                            $("#grp_list").html(table_ctx);
+                        });
+                    }
+                }
+            }
+            $(document).ready(function () {
+                $('#formid').on('keyup keypress', function (e) {
+                    var keyCode = e.keyCode || e.which;
+                    if (keyCode === 13) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            });
+            function fmt_time() {
+                let d = new Date(), Y = d.getFullYear(), M = d.getMonth() + 1, D = d.getDate();
+                let HH = d.getHours(), MM = d.getMinutes(), SS = d.getSeconds(), MS = d.getMilliseconds();
+                //return Y + '' + (M < 10 ? "0" + M : M) + '' + (D < 10 ? "0" + D : D) + "" + (HH < 10 ? '0' + HH : HH) + "" + (MM < 10 ? "0" + MM : MM) //+ ":" + SS +":" + MS;
+                return (HH < 10 ? '0' + HH : HH) + "：" + (MM < 10 ? "0" + MM : MM)
+            }
+            function rollcall_RPTAll() {
+                $("form input:radio").each(function () {
+
+                    if (this.id.startsWith("id")) {
+                        let aaid = this.id.split("_")[1]
+                        let leave = document.getElementById("rpt_" + aaid).checked
+                        if (leave) {
+                        } else {
+                            document.getElementById("rpt_" + aaid).checked = true
+                            document.getElementById("id_" + aaid).checked = true
+                        }
+                    }
+                });
+            }
+            function ArollcallAll() {
+                $("form input:radio").each(function () {
+
+                    if (this.id.startsWith("id")) {
+                        let aaid = this.id.split("_")[1]
+                        let leave = document.getElementById("Aleave_" + aaid).checked
+                        let rollcall = document.getElementById("Arollcall_" + aaid).checked
+                        let miss = document.getElementById("Amiss_" + aaid).checked
+                        if (leave || rollcall || miss) {
+                        } else {
+                            document.getElementById("Arollcall_" + aaid).checked = true
+                            document.getElementById("id_" + aaid).checked = true
+                        }
+                    }
+                });
+            }
+            function rollcallAll() {
+                $("form input:radio").each(function () {
+
+                    if (this.id.startsWith("id")) {
+                        let aaid = this.id.split("_")[1]
+                        let leave = document.getElementById("leave_" + aaid).checked
+                        let rollcall = document.getElementById("rollcall_" + aaid).checked
+                        let miss = document.getElementById("miss_" + aaid).checked
+                        if (leave || rollcall || miss) {
+                        } else {
+                            document.getElementById("rollcall_" + aaid).checked = true
+                            document.getElementById("id_" + aaid).checked = true
+                        }
+                    }
+                });
+            }
+            function reset_row(aaid, a) {
+                var x = document.getElementById("id_" + aaid);
+                if (!x.checked) {
+                    if (document.getElementById("leave_" + aaid).checked) document.getElementById("leave_" + aaid).checked = false
+                    if (document.getElementById("rollcall_" + aaid).checked) document.getElementById("rollcall_" + aaid).checked = false
+                    if (document.getElementById("miss_" + aaid).checked) document.getElementById("miss_" + aaid).checked = false
+                }
+            }
+            function Aintime(aaid, a) {
+                var x = document.getElementById("id_" + aaid);
+                x.checked = true;
+                let nullcnt = 0
+                for (o of ["Aleave_", "Arollcall_", "Amiss_"]) {
+                    let temp_ = document.getElementById(o + aaid);
+                    console.log(temp_.id, a.id)
+                    if (temp_.id == a.id && temp_.checked) {
+                        if (a.id.startsWith("Aleave_")) document.getElementById("va_" + aaid).value = 1
+                        if (a.id.startsWith("Arollcall_")) document.getElementById("va_" + aaid).value = 2
+                        if (a.id.startsWith("Amiss_")) document.getElementById("va_" + aaid).value = 4
+                    } else {
+                        temp_.checked = false;
+                        nullcnt++;
+                    }
+                }
+                if (nullcnt == 3) document.getElementById("va_" + aaid).value = 0;
+            }
+            function intime(aaid, a) {
+                var x = document.getElementById("id_" + aaid);
+                x.checked = true;
+                let nullcnt = 0
+                for (o of ["leave_", "rollcall_", "miss_"]) {
+                    let temp_ = document.getElementById(o + aaid);
+                    console.log(temp_.id, a.id)
+                    if (temp_.id == a.id && temp_.checked) {
+                        if (a.id.startsWith("leave_")) document.getElementById("va_" + aaid).value = 1
+                        if (a.id.startsWith("rollcall_")) document.getElementById("va_" + aaid).value = 2
+                        if (a.id.startsWith("miss_")) document.getElementById("va_" + aaid).value = 4
+                    } else {
+                        temp_.checked = false;
+                        nullcnt++;
+                    }
+                }
+                if (nullcnt == 3) document.getElementById("va_" + aaid).value = 0;
+            }
+            function outtime(x, a) {
+                var x = document.getElementById("out_time_" + x);
+                x.value = fmt_time()
+            }
+            function form_submit() {
+                let grp_list_flag = '';
+                let staf_ref = "";
+                let ori_list = [];
+                let act = "add";
+                var table = document.getElementById("grp_list");
+                let grg_cnt_flag = table.rows.length == 0;
+                console.log(grg_cnt_flag, grp_list_flag);
+                for (var i = 0, row; row = table.rows[i]; i++) {
+                    ori_list.push(`${row.cells[0].innerHTML}`)
+                    if (row.cells[0].innerHTML == staf_ref) act = "update"
+                }
+                let cnt = 0;
+                let cnt2 = 0;
+                $("form input:radio").each(function () {
+                    if (this.id.startsWith("id")) {
+                        if (!this.checked) {
+                            console.log(this.parentElement.parentElement)
+                            this.parentElement.parentElement.remove()
+                        } else {
+                            cnt++
+                            let aa_id = this.id.replace("id_", "")
+                            if (document.getElementById("rollcall_" + aa_id) && document.getElementById("rollcall_" + aa_id).checked) cnt2++
+                            if (document.getElementById("Arollcall_" + aa_id) && document.getElementById("Arollcall_" + aa_id).checked) cnt2++
+                        }
+                    }
+                });
+                if (cnt2 > 20) {
+                    if ("" != "" && grg_cnt_flag)
+                        $.post("", { cnt: cnt2, act: act }, function (data) {
+                            let table_ctx = ""
+                            for (let r of JSON.parse(data)) {
+                                table_ctx += `<tr><td>${r.stud_ref}<td>${r.al_id}<td>${r.classno}<td>${r.cnt}`
+                            }
+                            $("#grp_list").html(table_ctx);
+                        });
+                }
+                alert(`${cnt} ${cnt2}`);
+                document.getElementById("formid").submit();
+            }
+        </script>
+
+            <table class="table" id="EDUTBL">
+                <tr>
+                    <td>al-id</td>
+                    <td>act-c-id</td>
+                    <td>lesson</td>
+                    <td>shortname</td>
+                    <td>al-datetime</td>
+                    <td>al-datetime-end</td>
+                    <td ><a onclick="rollcall_RPTAll();">rpt 1</a> /<a onclick="rollcall_RPTAll();">hide 0</a></td>
+                    <td ><a onclick="rollcall_DISAll();">disable</a>/<a onclick="rollcall_DISAll();">enable</a></td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td class="M" id="MB_act-c-id_16">16</td>
+                    <td class="M" id="MC_lesson_16">小一信</td>
+                    <td class="M" id="MD_shortname_16">P1A</td>
+                    <td class="M" id="ME_al-datetime_16">202403191559</td>
+                    <td class="M" id="MF_al-datetime-end_16">202404291559</td>
+                    <td class="M" id="MG_rpt_16">
+                        <input type="radio" name="rpt_16" id="rpt_16_1" value="1" checked="false">
+                        <input type="radio" name="rpt_16" id="rpt_16_0" value="0" checked="true">
+                    </td>
+                    <td class="M" id="MH_disable_16">
+                        <input type="radio" name="disable_16" id="disable_16_1" value="1"  checked="false">
+                        <input type="radio" name="disable_16" id="disable_16_0" value="0"  checked="true">
+                    </td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td class="M" id="MB_act-c-id_17">17</td>
+                    <td class="M" id="MC_lesson_17">小一信</td>
+                    <td class="M" id="MD_shortname_17">P1A</td>
+                    <td class="M" id="ME_al-datetime_17">202403191559</td>
+                    <td class="M" id="MF_al-datetime-end_17">202404291559</td>
+                    <td class="M" id="MG_rpt_17">
+                        <input type="radio" name="rpt_17" id="rpt_17_1" value="1" checked="false">
+                        <input type="radio" name="rpt_17" id="rpt_17_0" value="0" checked="true">
+                    </td>
+                    <td class="M" id="MH_disable_17">
+                        <input type="radio" name="disable_17" id="disable_17_1" value="1"  checked="false">
+                        <input type="radio" name="disable_17" id="disable_17_0" value="0"  checked="true">
+                    </td>
+                </tr>
+
+            </table>
+    </div>
+    <div>/internal/attrollcall/rollcall_list_setting</div>
+    <script>var fn = '';
+        var PostUrl = '/internal/attrollcall/rollcall_list_setting';  //api/DataViewGrid/rc/edit/attrollcall_lesson';//';    
+        var returnUrl = '/api/DataViewGrid';
+        //$('#returnUrlBtn').attr("href", returnUrl);
+        $(document).ready(function () {
+        });  
+    </script>
+</body>
+
+</html>

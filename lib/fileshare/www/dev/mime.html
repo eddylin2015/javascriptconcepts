@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>act</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/stylesheets/bootstrap.min.css">
+    <!--link(rel='stylesheet', href='/stylesheets/main.css')-->
+    <script src="/static/javascripts/jquery.js">   </script>
+    <script src="/static/javascripts/bootstrap.js">       </script>
+    <style>
+        a {
+            /*color:white;*/
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header"><button class="navbar-toggle" type="button" data-toggle="collapse"
+                    data-target="#myNavbar"><span class="icon-bar"></span><span class="icon-bar"></span><span
+                        class="icon-bar"></span></button><a class="navbar-brand"
+                    href="/internal/attrollcall/intro">集合點名</a></div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/internal/"> <span class="glyphicon">&#xe021</span></a></li>
+                    <li><a href="/internal/attrollcall">班別</a></li>
+                    <li><a href="/internal/attrollcall?sect=Dept">部門</a></li>
+                    <li><a href="/internal/attrollcall/myrollcall">職員登記</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">總表 <span
+                                class="caret">
+                                <ul class="dropdown-menu">
+                                    <li><a
+                                            href="/internal/attrollcall/rollcall_list_setting?form=1&amp;disabled=0&amp;rpt=1">報表篩選設置
+                                        </a></li>
+                                    <li><a href="/internal/attrollcall/rollcall_list?type=A&amp;rpt=1">點到A列表</a></li>
+                                    <li><a href="/internal/attrollcall/leave_list?type=A&amp;rpt=1">A請假列表</a></li>
+                                    <li><a href="/internal/attrollcall/miss_list?type=A&amp;rpt=1">A失踪列表</a></li>
+                                    <li><a href="/internal/attrollcall/unknown_list?type=A&amp;rpt=1">A狀態未明</a></li>
+                                    <li><a href="/internal/attrollcall/rollcall_list?type=B&amp;rpt=1">點到B列表</a></li>
+                                    <li><a href="/internal/attrollcall/leave_list?type=B&amp;rpt=1">B請假列表</a></li>
+                                    <li><a href="/internal/attrollcall/miss_list?type=B&amp;rpt=1">B失踪B列表</a></li>
+                                    <li><a href="/internal/attrollcall/unknown_list?type=B&amp;rpt=1">B狀態未明</a></li>
+                                    <li><a href="/internal/attrollcall/rollcall_table?type=src&amp;rpt=1">Table_src</a>
+                                    </li>
+                                    <li><a href="/internal/attrollcall/rollcall_table&amp;rpt=1">Table_desc</a></li>
+                                    <!--lia(href="/internal/attrollcall/grp_cnt_list") 班別報數-->
+                                </ul>
+                            </span></a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">設定<span
+                                class="caret">
+                                <ul class="dropdown-menu">
+                                    <li><a href="/internal/attrollcall/chgpwd">修改密碼</a></li>
+                                    <li><a href="/internal/attrollcall/grpmng">群組管理</a></li>
+                                </ul>
+                            </span></a></li>
+                </ul>
+                <ul class="navbar-text navbar-right"><a href="/internal/attrollcall/al_logout"
+                        style="color:green">(exit)2002024 </a><span>LAM MOU
+                        &nbsp;</span><!--a(href='/logout') (logout)--></ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h3> </h3>
+        <style>
+            input {
+                color: black
+            }
+
+            input[type="text"] {
+                border: 0
+            }
+
+            input[type="checkbox"] {
+                border: 1px solid #a9a9a9;
+                border-radius: .25em;
+                width: 1.5em;
+                height: 1.5em;
+            }
+
+            input[type="checkbox"]:disabled,
+            input[type="radio"]:disabled {
+                text-decoration: line-through;
+                cursor: not-allowed;
+                color: #FFF;
+            }
+        </style>
+        <script>
+
+            $(document).ready(function () {
+                $('#formid').on('keyup keypress', function (e) {
+                    var keyCode = e.keyCode || e.which;
+                    if (keyCode === 13) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            });
+            function fmt_time() {
+                let d = new Date(), Y = d.getFullYear(), M = d.getMonth() + 1, D = d.getDate();
+                let HH = d.getHours(), MM = d.getMinutes(), SS = d.getSeconds(), MS = d.getMilliseconds();
+                //return Y + '' + (M < 10 ? "0" + M : M) + '' + (D < 10 ? "0" + D : D) + "" + (HH < 10 ? '0' + HH : HH) + "" + (MM < 10 ? "0" + MM : MM) //+ ":" + SS +":" + MS;
+                return (HH < 10 ? '0' + HH : HH) + "：" + (MM < 10 ? "0" + MM : MM)
+            }
+            function ArollcallAll() {
+                $("form input:checkbox").each(function () {
+
+                    if (this.id.startsWith("id")) {
+                        let aaid = this.id.split("_")[1]
+                        let leave = document.getElementById("Aleave_" + aaid).checked
+                        let rollcall = document.getElementById("Arollcall_" + aaid).checked
+                        let miss = document.getElementById("Amiss_" + aaid).checked
+                        if (leave || rollcall || miss) {
+                        } else {
+                            document.getElementById("Arollcall_" + aaid).checked = true
+                            document.getElementById("id_" + aaid).checked = true
+                        }
+                    }
+                });
+            }
+            function rollcallAll() {
+                $("form input:checkbox").each(function () {
+
+                    if (this.id.startsWith("id")) {
+                        let aaid = this.id.split("_")[1]
+                        let leave = document.getElementById("leave_" + aaid).checked
+                        let rollcall = document.getElementById("rollcall_" + aaid).checked
+                        let miss = document.getElementById("miss_" + aaid).checked
+                        if (leave || rollcall || miss) {
+                        } else {
+                            document.getElementById("rollcall_" + aaid).checked = true
+                            document.getElementById("id_" + aaid).checked = true
+                        }
+                    }
+                });
+            }
+            function reset_row(aaid, a) {
+                var x = document.getElementById("id_" + aaid);
+                if (!x.checked) {
+                    if (document.getElementById("leave_" + aaid).checked) document.getElementById("leave_" + aaid).checked = false
+                    if (document.getElementById("rollcall_" + aaid).checked) document.getElementById("rollcall_" + aaid).checked = false
+                    if (document.getElementById("miss_" + aaid).checked) document.getElementById("miss_" + aaid).checked = false
+                }
+            }
+            function Aintime(aaid, a) {
+                var x = document.getElementById("id_" + aaid);
+                x.checked = true;
+                let nullcnt = 0
+                for (o of ["Aleave_", "Arollcall_", "Amiss_"]) {
+                    let temp_ = document.getElementById(o + aaid);
+                    console.log(temp_.id, a.id)
+                    if (temp_.id == a.id && temp_.checked) {
+                        if (a.id.startsWith("Aleave_")) document.getElementById("va_" + aaid).value = 1
+                        if (a.id.startsWith("Arollcall_")) document.getElementById("va_" + aaid).value = 2
+                        if (a.id.startsWith("Amiss_")) document.getElementById("va_" + aaid).value = 4
+                    } else {
+                        temp_.checked = false;
+                        nullcnt++;
+                    }
+                }
+                if (nullcnt == 3) document.getElementById("va_" + aaid).value = 0;
+            }
+            function intime(aaid, a) {
+                var x = document.getElementById("id_" + aaid);
+                x.checked = true;
+                let nullcnt = 0
+                for (o of ["leave_", "rollcall_", "miss_"]) {
+                    let temp_ = document.getElementById(o + aaid);
+                    console.log(temp_.id, a.id)
+                    if (temp_.id == a.id && temp_.checked) {
+                        if (a.id.startsWith("leave_")) document.getElementById("va_" + aaid).value = 1
+                        if (a.id.startsWith("rollcall_")) document.getElementById("va_" + aaid).value = 2
+                        if (a.id.startsWith("miss_")) document.getElementById("va_" + aaid).value = 4
+                    } else {
+                        temp_.checked = false;
+                        nullcnt++;
+                    }
+                }
+                if (nullcnt == 3) document.getElementById("va_" + aaid).value = 0;
+            }
+            function outtime(x, a) {
+                var x = document.getElementById("out_time_" + x);
+                x.value = fmt_time()
+            }
+            function form_submit(formid) {
+                let staf_ref = "2002024";
+                $(`form#formid_${formid} input:checkbox`).each(function () {
+                    if (this.id.startsWith("id")) {
+                        if (!this.checked) {
+                            //console.log(this.parentElement.parentElement)
+                            //this.parentElement.parentElement.remove()
+                        } else {
+                            let aa_id = this.id.replace("id_", "")
+                            //if (document.getElementById("rollcall_" + aa_id) && document.getElementById("rollcall_" + aa_id).checked) cnt2++
+                            //if (document.getElementById("Arollcall_" + aa_id) && document.getElementById("Arollcall_" + aa_id).checked) cnt2++
+                        }
+                    }
+                });
+                document.getElementById("formid_"+formid).submit();
+            }</script>
+        <h4>點名A </h4>
+        <h4>資訊及通訊科技 240327</h4>
+        <form method="POST" enctype="multipart/form-data" id="formid_1">
+            <table class="table">
+                <tr>
+                    <td>更新</td>
+                    <td>&nbsp;Name</td>
+                    <td>&nbsp;</td>
+                    <td> <!--a(onclick="ArollcallAll();") --><span>報到_A</span></td>
+                    <td>&nbsp; </td>
+                    <td>&nbsp;</td>
+                    <td> <!--a(onclick="rollcallAll();") --><span>報到_B</span></td>
+                    <td>&nbsp; </td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" id="id_7606" onclick="reset_row(7606,this)"><input type="hidden"
+                            id="va_7606" size="1" readonly disabled><small>aid:</small><small>74</small></td>
+                    <td> <span>林鵡</span><br><span>2002</span><span> &nbsp;</span><span>24</span></td>
+                    <td>
+                        <div class="form-group"><label for="title" style="width:20px">請假</label><input type="checkbox"
+                                name="in-type_7606" id="Aleave_7606" value="1" checked onclick="Aintime(7606,this)">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group"><label for="title" style="width:20px">報到</label><input type="checkbox"
+                                name="in-type_7606" id="Arollcall_7606" value="2" onclick="Aintime(7606,this)"></div>
+                    </td>
+                    <td>
+                        <div class="form-group"><label for="title" style="width:20px">失踪</label><input type="checkbox"
+                                name="in-type_7606" id="Amiss_7606" value="4" onclick="Aintime(7606,this)"></div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            <button class="btn btn-success" type="bottun" onclick="form_submit(1);">Save</button>
+        </form>
+        <hr>
+        <h4>資訊及通訊科技(内部開會) 240405</h4>
+        <form method="POST" enctype="multipart/form-data" id="formid_2">
+            <table class="table">
+                <tr>
+                    <td>更新</td>
+                    <td>&nbsp;Name</td>
+                    <td>&nbsp;</td>
+                    <td> <!--a(onclick="ArollcallAll();") --><span>報到_A</span></td>
+                    <td>&nbsp; </td>
+                    <td>&nbsp;</td>
+                    <td> <!--a(onclick="rollcallAll();") --><span>報到_B</span></td>
+                    <td>&nbsp; </td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" id="id_8107" onclick="reset_row(8107,this)"><input type="hidden"
+                            id="va_8107" size="1" readonly disabled><small>aid:</small><small>116</small></td>
+                    <td> <span>林鵡</span><br><span>2002</span><span> &nbsp;</span><span>24</span></td>
+                    <td>
+                        <div class="form-group"><label for="title" style="width:20px">請假</label><input type="checkbox"
+                                name="in-type_8107" id="Aleave_8107" value="1" onclick="Aintime(8107,this)"></div>
+                    </td>
+                    <td>
+                        <div class="form-group"><label for="title" style="width:20px">報到</label><input type="checkbox"
+                                name="in-type_8107" id="Arollcall_8107" value="2" onclick="Aintime(8107,this)"></div>
+                    </td>
+                    <td>
+                        <div class="form-group"><label for="title" style="width:20px">失踪</label><input type="checkbox"
+                                name="in-type_8107" id="Amiss_8107" value="4" onclick="Aintime(8107,this)"></div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            <button class="btn btn-success" type="bottun" onclick="form_submit(2);">Save</button>
+        </form>
+    </div>
+</body>
+
+</html>

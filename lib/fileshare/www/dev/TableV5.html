@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Cool Grid</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/stylesheets/bootstrap.min.css">
+    <script src="/static/javascripts/jquery.js"></script>
+    <script src="/static/javascripts/bootstrap.js"></script>
+    <script src="/static/jquery-ui-dist/jquery-ui.min.js"></script>
+    <link href= "/static/jquery-ui-dist/jquery-ui.min.css" rel="stylesheet">
+    <script src="/static/javascripts/cool/grid_v5.js"></script>
+    <link rel="stylesheet" href="/static/javascripts/cool/grid.css">
+    <style>
+        textarea { min-width: 40px; min-height: 30px; }
+        div.container { margin: 0px; }
+        .highlight {
+            background-color: yellow;
+        }
+    </style>
+    <script>
+        var fn = '';
+        var PostUrl = '/internal/api/DataGrid/TableRowUpdate';  // POST /internal/api/TableRowUpdate/:id
+        var returnUrl = '/internal/api/DataGrid';
+        $(document).ready(function () {
+            let cfg={fn:'',PostUrl:''}
+            let cgrid=new CoolGrid(document.getElementById('EDUTBL'),cfg);
+            cgrid.GenOriginalData();
+            cgrid.BindingFunctions(cgrid,"editbtn", "savebtn", 'readmodebtn');
+            $('#exportxls_button').click(function () { cfg.exportxls('EDUTBL'); });
+            $("#exportcsv_button").on('click', function (event) { cfg.exportcsv("EDUTBL"); });
+            var returnUrl = '/api/DataViewGrid';
+            $('#returnUrlBtn').attr("href", returnUrl);
+            $('#EDUTBL tr').each(function() {
+                    var cellValue = $(this).find('td:first').text();
+                    if (parseInt(cellValue) % 2 === 0) {
+                        $(this).addClass('highlight');
+                    }
+                });        
+            //$('td').filter(function () { return this.innerHTML.match(/^[0-9\s\.,]+$/); }).css('text-align', 'right');
+
+        });  
+    </script>
+</head>
+
+<body>
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand"></div><a class="navbar-brand"><img src="DataViewGrid.png" width="50px"></a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/"> <span class="glyphicon">&#xe021</span></a></li>
+                <li><a href="/internal/attrollcall">DataViewGrid Component</a></li>
+            </ul>
+            <p class="navbar-text navbar-right"><span>John &nbsp;<a href="/logout">(logout)</a></span></p>
+        </div>
+    </div>
+    <div><a class="btn btn-primary btn-sm" href="#" style="color:yellow;" id="editbtn">編輯</a><a
+            class="btn btn-primary btn-sm" href="#" style="color:yellow;" id="savebtn">儲存</a><a
+            class="btn btn-primary btn-sm" href="#" style="color:yellow;" id="readmodebtn">唯讀</a><a
+            class="btn btn-primary btn-sm" href="#" style="color:yellow;" id="exportcsv_button">匯出csv </a><a
+            class="btn btn-primary btn-sm" href="#" style="color:yellow;" id="exportxls_button">匯出xls </a></div>
+    <div class="container">
+        <table class="table" id="EDUTBL">
+            <tr>
+                <td>al-id</td>
+                <td>act-c-id</td>
+                <td>lesson</td>
+                <td>shortname</td>
+                <td>al-datetime</td>
+                <td>al-datetime-end</td>
+                <td>rpt</td>
+                <td>disable</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td class="M" id="MB_act-c-id_16">16</td>
+                <td class="M" id="MC_lesson_16">小一信</td>
+                <td class="M" id="MD_shortname_16">P1A</td>
+                <td class="M" id="ME_al-datetime_16">202403191559</td>
+                <td class="M" id="MF_al-datetime-end_16">202404291559</td>
+                <td class="M" id="MG_rpt_16">1</td>
+                <td class="M" id="MH_disable_16">0</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td class="M" id="MB_act-c-id_17">17</td>
+                <td class="M" id="MC_lesson_17">小一望</td>
+                <td class="M" id="MD_shortname_17">P1B</td>
+                <td class="M" id="ME_al-datetime_17">202403191559</td>
+                <td class="M" id="MF_al-datetime-end_17">202404291559</td>
+                <td class="M" id="MG_rpt_17">1</td>
+                <td class="M" id="MH_disable_17">0</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td class="M" id="MB_act-c-id_18">18</td>
+                <td class="M" id="MC_lesson_18">小一愛</td>
+                <td class="M" id="MD_shortname_18">P1C</td>
+                <td class="M" id="ME_al-datetime_18">202403191559</td>
+                <td class="M" id="MF_al-datetime-end_18">202404291559</td>
+                <td class="M" id="MG_rpt_18">1</td>
+                <td class="M" id="MH_disable_18">0</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td class="M" id="MB_act-c-id_19">19</td>
+                <td class="M" id="MC_lesson_19">小一善</td>
+                <td class="M" id="MD_shortname_19">P1D</td>
+                <td class="M" id="ME_al-datetime_19">202403191559</td>
+                <td class="M" id="MF_al-datetime-end_19">202404291559</td>
+                <td class="M" id="MG_rpt_19">1</td>
+                <td class="M" id="MH_disable_19">0</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td class="M" id="MB_act-c-id_20">20</td>
+                <td class="M" id="MC_lesson_20">小二信</td>
+                <td class="M" id="MD_shortname_20">P2A</td>
+                <td class="M" id="ME_al-datetime_20">202403191559</td>
+                <td class="M" id="MF_al-datetime-end_20">202404291559</td>
+                <td class="M" id="MG_rpt_20">1</td>
+                <td class="M" id="MH_disable_20">0</td>
+            </tr>
+            <tr>
+                <td>21</td>
+                <td class="M" id="MB_act-c-id_21">21</td>
+                <td class="M" id="MC_lesson_21">小二望</td>
+                <td class="M" id="MD_shortname_21">P2B</td>
+                <td class="M" id="ME_al-datetime_21">202403191559</td>
+                <td class="M" id="MF_al-datetime-end_21">202404291559</td>
+                <td class="M" id="MG_rpt_21">1</td>
+                <td class="M" id="MH_disable_21">0</td>
+            </tr>
+            <tr>
+                <td>22</td>
+                <td class="M" id="MB_act-c-id_22">22</td>
+                <td class="M" id="MC_lesson_22">小二愛</td>
+                <td class="M" id="MD_shortname_22">P2C</td>
+                <td class="M" id="ME_al-datetime_22">202403191559</td>
+                <td class="M" id="MF_al-datetime-end_22">202404291559</td>
+                <td class="M" id="MG_rpt_22">1</td>
+                <td class="M" id="MH_disable_22">0</td>
+            </tr>
+            <tr>
+                <td>23</td>
+                <td class="M" id="MB_act-c-id_23">23</td>
+                <td class="M" id="MC_lesson_23">小二善</td>
+                <td class="M" id="MD_shortname_23">P2D</td>
+                <td class="M" id="ME_al-datetime_23">202403191559</td>
+                <td class="M" id="MF_al-datetime-end_23">202404291559</td>
+                <td class="M" id="MG_rpt_23">1</td>
+                <td class="M" id="MH_disable_23">0</td>
+            </tr>
+            <tr>
+                <td>24</td>
+                <td class="M" id="MB_act-c-id_24">24</td>
+                <td class="M" id="MC_lesson_24">小三信</td>
+                <td class="M" id="MD_shortname_24">P3A</td>
+                <td class="M" id="ME_al-datetime_24">202403191559</td>
+                <td class="M" id="MF_al-datetime-end_24">202404291559</td>
+                <td class="M" id="MG_rpt_24">1</td>
+                <td class="M" id="MH_disable_24">0</td>
+            </tr>
+            <tr>
+                <td>25</td>
+                <td class="M" id="MB_act-c-id_25">25</td>
+                <td class="M" id="MC_lesson_25">小三望</td>
+                <td class="M" id="MD_shortname_25">P3B</td>
+                <td class="M" id="ME_al-datetime_25">202403191559</td>
+                <td class="M" id="MF_al-datetime-end_25">202404291559</td>
+                <td class="M" id="MG_rpt_25">1</td>
+                <td class="M" id="MH_disable_25">0</td>
+            </tr>
+            <tr>
+                <td>26</td>
+                <td class="M" id="MB_act-c-id_26">26</td>
+                <td class="M" id="MC_lesson_26">小三愛</td>
+                <td class="M" id="MD_shortname_26">P3C</td>
+                <td class="M" id="ME_al-datetime_26">202403191559</td>
+                <td class="M" id="MF_al-datetime-end_26">202404291559</td>
+                <td class="M" id="MG_rpt_26">1</td>
+                <td class="M" id="MH_disable_26">0</td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

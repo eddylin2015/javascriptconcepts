@@ -1,0 +1,116 @@
+
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <title>JavaScript XPM2 Bitmap Generator</title>
+        <style type="text/css">
+            body {
+                font: 12px Verdana, sans-serif;
+            }
+            #show_xpm2 {
+                margin: 10px;
+                padding: 10px;
+                border: 1px solid #eee;
+            }
+            #xpm2 {
+                width: 500px;
+            }
+            textarea {
+                height: 400px;
+                width: 100%;
+                border: 1px solid #ddd;
+                font-family: monospace;
+            }
+            input {
+                width: 480px;
+                margin: 10px;
+                border: 1px solid #ddd;
+                font-family: monospace;
+            }
+            h2 {
+                font-size: 1em;
+                color: #fc0;
+            }
+            #js_required {
+                padding: 5px;
+                margin: 10px;
+                border: 2px dotted red;
+                font-weight: bold;
+            }
+        </style>
+        <script type="text/javascript" src="jsbmp.js"></script>
+        <script type="text/javascript" src="datauri.js"></script>
+        <script type="text/javascript" src="xpm2.js"></script>
+        <script type="text/javascript">
+            var log = (typeof console == 'undefined') ? function() {} : console.log;
+            window.onload = function() {
+                function xpmclick() {
+                    var img = document.getElementById("xpm2_img");
+                    if (!img) {
+                        img = new Image();
+                        img.id = "xpm2_img";
+                        document.getElementById("show_xpm2").appendChild(img);
+                    }
+                    try {
+                        var content = xpm2_rgb(document.getElementById("xpm2_content").value);
+                        console.log(content)
+                        console.log(1)
+                        var uri = datauri("image/bmp", content);
+                        console.log(2)
+                        document.getElementById("xpm2_datauri").value = uri;
+                        img.src = uri;
+                    } catch (e) {
+                        alert("Error - possible malformed image.");
+                        log(e);
+                    }
+                    return false;
+                }
+                document.getElementById("do_xpm2").onclick = xpmclick;
+                var e = document.getElementById("js_required");
+                e.parentNode.removeChild(e);
+                xpmclick();
+            };
+        </script>
+    </head>
+<body>
+<h1>XPM2-Bitmap</h1>
+<div id="xpm2">
+<p>Create Windows bitmap (.BMP) images from <a href="http://en.wikipedia.org/wiki/X_PixMap">X PixMap v2</a> formatted text.</p>
+<p>This page is a demonstration of <a href="./">jsbmp</a>, a simple bitmap-generation library written in JavaScript. A browser with support for <code>data</code> URIs is required.</p>
+<div id="js_required">
+    <p>Please enable JavaScript. For reasons that should be obvious, this JavaScript demo requires it.</p>
+</div>
+<h2>Image</h2>
+<div id="show_xpm2"></div>
+<h2><code>data</code> URI</h2>
+<input type="text" id="xpm2_datauri"></input>
+<form>
+<h2>XPM2 Data</h2>
+<textarea id="xpm2_content"># c #000000
+H c #ff0000
+O c #eeddcc
+. c #ffffff
+...HHHHH....
+..HHHHHHHHH.
+..###OO#O...
+.#O#OOO#OOO.
+.#O##OOO#OOO
+O##OOOO####.
+...OOOOOOO..
+..##H###....
+.###H##H###.
+####HHHH####
+OO#HOHHO####
+OOOHHHHHHOOO
+OOHHHHHHHHOO
+..HHH..HHH..
+.###....###.
+####....####
+</textarea>
+<br />
+<button id="do_xpm2">Render</button>
+</form>
+</div>屆屆
+</body>
+</html>

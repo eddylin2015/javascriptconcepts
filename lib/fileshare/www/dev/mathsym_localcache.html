@@ -1,0 +1,448 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Math</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <script src="/jquery-3.7.1.min.js"></script>
+    <!--script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script-->
+    <link rel="stylesheet" href="//www.mbc.edu.mo/stylesheets/cool/remi/remi_res_style.css">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>        
+  </head>
+  <style>
+    body{padding: 20px;}
+    textarea#code{font-size: 18px;}
+    textarea#code_checkans{font-size: 18px;}  
+    span.cbutton {
+        color: white;
+        background: #045ABC;
+        text-align: center;
+        width: 60px;
+        height: 25px;
+        box-shadow: 3px 3px 5px rgb(150 150 150);
+    }
+    span.dbutton {
+        color: white;
+        background: #5e5f61;
+        text-align: center;
+        width: 60px;
+        height: 25px;
+        box-shadow: 3px 3px 5px rgb(150 150 150);
+    }
+    div.msgcenter {
+        position: fixed;
+        top: 10%;
+        left: 10%;
+        width: 80%;
+        height: 80%;
+        border: 3px solid #045ABC;
+        padding: 3px;
+        background-color: white;
+        font-size: 30px;
+    }
+    div.msgboxclosebtn {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+    nm {color:black;}
+    #loading {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        border: 3px solid rgba(172, 237, 255, 0.5);
+        border-radius: 1;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+        -webkit-animation: spin 1s ease-in-out infinite;
+      }
+      @keyframes spin {
+        to {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+      @-webkit-keyframes spin {
+        to {
+          -webkit-transform: rotate(360deg);
+        }
+      }      
+  </style>
+  <script>
+    function convert(x) {
+      let output = document.getElementById('QContent'); //  Clear the old output
+      output.innerHTML = '';
+      //  Reset the tex labels (and automatic equation numbers, though there aren't any here).
+      //  Get the conversion options (metrics and display settings)
+      //  Convert the input to CommonHTML output and use a promise to wait for it to be ready
+      //    (in case an extension needs to be loaded dynamically).
+      MathJax.texReset();
+      var options = MathJax.getMetricsFor(output);
+      options.display = false;
+      for(l of x){
+      let input = l.trim(); //  Get the TeX input
+      MathJax.tex2chtmlPromise(input, options).then(function (node) {
+        //  The promise returns the typeset node, which we add to the output
+        //  Then update the document to include the adjusted CSS for the
+        //    content of the new equation.
+        output.appendChild(node);
+        MathJax.startup.document.clear();
+        MathJax.startup.document.updateDocument();
+        output.appendChild(document.createElement("br"));
+      }).catch(function (err) {
+        console.log(err.message);
+        output.appendChild(document.createElement('pre')).appendChild(document.createTextNode(err.message));
+      }).then(function () {
+        // Error or not
+      });
+      }
+    }
+      function Latex2Html(ValSt){
+         MathJax.texReset();
+         let html = MathJax.tex2chtml(ValSt, {em: 12, ex: 6, display: false});
+         document.getElementById('QContent').innerHTML= html.outerHTML;
+      }
+      function UpdateMathContent(x) {
+        //顯示代數書寫表達樣本
+        //MathJax.Hub.Config({ tex2jax: { inlineMath: [['$', '$'], ['\\(', '\\)']] } });
+        //MathJax.Hub.Queue(["Typeset", MathJax.Hub, x]);
+        let ValSt=$(`#${x}`).html()
+        let html = MathJax.tex2chtml(ValSt, {em: 12, ex: 6, display: false});
+        let text = html.outerHTML;
+        $(`#${x}`).html(text);        
+      }        
+      
+      function show_infobox(x) {
+        document.getElementById("msgbox_txt").innerHTML=x;
+        document.getElementById('msgbox').style.display = "block";
+      }
+      function show_msgbox(x) {
+        document.getElementById(x).style.display = "block";
+      }      
+      function close_msgbox(x) {
+        document.getElementById(x).style.display = "none";
+      }
+      function max_msgbox(x) {
+        document.getElementById(x).setAttribute("style","height:500px");
+      }
+      function AddHistoryRec(ValSt,OK,Minute,Mark){
+            let ok_or_not_span = OK == "1" ? '<span>√</span>' : '<span>X</span>';
+            let html = MathJax.tex2chtml(ValSt, {em: 12, ex: 6, display: false});
+            let text = html.outerHTML;
+            $(`#Standrad_And1`).html(text);
+            let rec_history = document.getElementById("rec_history")
+            let row = rec_history.insertRow(); row.style = "font-size:12px;"
+            let cel=null;
+            cel=row.insertCell();cel.innerHTML = 1; cel.classList.add("TableTitle");
+            cel=row.insertCell();cel.innerHTML = ok_or_not_span ;cel.classList.add("TableTitle");
+            cel=row.insertCell();cel.innerHTML = Minute;cel.classList.add("TableTitle");
+            cel=row.insertCell();cel.innerHTML = Mark;cel.classList.add("TableTitle");
+            $('#xt_mark').val(Number($('#xt_mark').val())+ Number(Mark));
+            $('#xt_spendtime').val(add_time($('#xt_spendtime').val(),Minute));
+            return 1;
+      }
+      /*Check TE.Ans*/  
+      async function CheckTE(x){
+         await pyodide.runPython(code_checkans.value);
+         $('#btnNext1').css("display","block");
+         $('#btnSubm1').css("display","none");
+      } 
+      function choiceTx(i,xg,qid) {
+        document.getElementById('CodeIDE').style.display='block';
+      } 
+  </script>
+  <body class="BODY remi-main">
+    <a href="mathplayground.html"><span class="cbutton" style="position:absolute;left:0px;top:2px;">返回</span></a>
+    <div id="loading" class="Container" data-parent-widget="1962765476816" style="display:none;margin:None">
+        <div id="loading-animation" class="Widget" data-parent-widget="1962765501920" style="margin:None"></div>
+    </div>
+    <div id="1962765534496" class="Container" data-parent-widget="1962764129376"
+        style="width:800px;height:640px;background-color:#cdf2ff">
+        <p class="Label"
+            style="min-width:260px;margin:5px;position:absolute;left:200px;top:0px;font-family:隶书;font-size:30px;font-color:rgb(0,0,255);font-weight:bold">
+            一元二次方程式根之和、積及判別式
+        </p>
+        <p class="Label" style="margin:0px;position:absolute;left:10px;top:50px">班级</p>
+        <input id="std_classno" class="" value="" type=""
+            style="margin:3px;width:80px;height:20px;position:absolute;left:38px;top:45px"></input>
+        <p class="Label" style="margin:0px;position:absolute;left:150px;top:50px">姓名</p>
+        <input id="std_name" class="" value="lammou" type=""
+            style="margin:3px;width:80px;height:20px;position:absolute;left:178px;top:45px"></input>
+        <p class="Label" style="min-width:60px;margin:0px;position:absolute;left:320px;top:50px">日期</p>
+        <input id="xt_date" class="" value="" type="" autocomplete="off"
+            style="margin:3px;width:70px;height:20px;position:absolute;left:348px;top:45px"></input>
+        <p class="Label" style="min-width:60px;margin:0px;position:absolute;left:440px;top:50px">時間</p>
+        <input id="xt_time" class="" value=""
+            style="margin:3px;width:60px;height:20px;position:absolute;left:468px;top:45px"></input>
+        <p class="Label" style="min-width:60px;margin:0px;position:absolute;left:562px;top:50px">總耗時</p>
+        <input id="xt_spendtime" class="" value="0" type="" autocomplete="off"
+            style="margin:3px;width:50px;height:20px;position:absolute;left:605px;top:45px"></input>
+        <p class="Label" style="min-width:60px;margin:0px;position:absolute;left:678px;top:50px">總得分</p>
+        <input id="xt_mark" class="" value="0" type="" autocomplete="off" readonly
+            style="margin:3px;width:50px;height:20px;position:absolute;left:720px;top:45px"></input>
+        <p class="Label" style="min-width:60px;margin:0px;position:absolute;left:345px;top:90px">題型</p>
+        <input id="xt_tx" class="" value="1" type="" autocomplete="off" readonly
+            style="margin:3px;width:40px;height:20px;position:absolute;left:375px;top:85px"></input>
+        <p class="Label" style="min-width:60px;margin:0px;position:absolute;left:458px;top:90px">題號</p>
+        <input id="xt_tid" class="" value="0" type="" autocomplete="off" readonly
+            style="margin:3px;width:40px;height:20px;position:absolute;left:488px;top:85px"></input>
+        <p class="Label" style="min-width:60px;margin:0px;position:absolute; left:690px; top:90px">等级</p>
+        <input id="xt_grade" class="" value="4" type="" autocomplete="off" readonly
+            style="margin:3px;width:40px;height:20px;position:absolute; left:720px; top:85px"></input>
+        <a onclick="choiceTx(0,4)"><button class="Button"
+                style="margin:0px;width:60px;height:25px;position:absolute;left:10px;top:85px">題型1</button></a>
+        <div class="container">
+<div class="HBox"
+  style="width:780px;height:500px;position:absolute;left:10px;top:130px;background-color:#a0a0a0;display:flex;flex-direction:row;justify-content:space-around;align-items:center">
+  <div class="Container" style="z-index:999;width:500px;height:490px;position:static;top:130px;background-color:#fde9d9;order:-1">
+
+    <form method="POST" id="formid">
+      <P>
+        <input name="SID" type="hidden" value="2022-09-02T20_28_17.936103.0.7816870947720679">
+      </P>
+      <div id="content1" style="display:block">
+        <p class="Label" style="position:absolute;left:10px;top:8px">命題</p>
+        <input class="" value="" type="" autocomplete="off"
+          style="width:450px;height:165px;position:absolute;left:45px;top:8px"></input>
+        <div style="width:440px;height:100px;position:absolute;left:48px;top:18px" id="QContent"> 
+        </div>
+        <p class="Label" style="position:absolute;left:10px;top:180px">答題</p>
+        <div style="display: grid;grid-template-columns: 150px 150px;margin:0;width:385px;height:90px;position:absolute;left:45px;top:180px">
+           <input id="Ans1" name="Ans1" autocomplete="off" style="width:375px;height:40px;font-size: 16px;" placeholder="答題" >
+        </div>
+        <p class="Label" style="position:absolute;left:10px;top:275px">答案</p>
+        <div class="" value="" type="" autocomplete="off"
+          style="width:385px;height:50px;position:absolute;left:45px;top:275px">
+          <div id="Standrad_Ans1"></div>
+        </div>
+        <span id="btnSubm1" class="cbutton" onclick="CheckTE(1)"
+          style="display:none;position:absolute;left:435px;top:180px;">确定</span>
+        <span id="btnNext1" class="cbutton" onclick="showCtx(1)"
+          style="display:none;position:absolute;left:435px;top:180px;">下一題</span>
+        <input style="display:none" name="1001" id="T1" value="28:17">
+        <!-- left:345 --> 
+      </div>
+    </form>
+    <p class="Label" style="position:absolute;left:10px;top:310px">說明</p>
+    <div style="width:492px;height:165px;position:absolute;left:10px;top:330px;background-color:#ffffd8">
+      <span>1.可以用紙筆計算，也可以用計算器輔助計算。</span><br>
+      <span>2.單行分數寫法如右，例如：\(\frac{𝑎}{𝑏} \) 寫成 a / b ----- 分數線用斜橫。</span><br>
+      <span>3.單行指數寫法如右，例如： \(x^2+1\) 寫成 x^2+1 ---- 用指數符"^"或"**"。</span><br>
+      <span>4.單行根式寫法如右，例如：\(\sqrt[2]{𝑥+1}\) 寫成 J(x+1) ---- 大寫 J+ 括弧。</span><br>
+      <span>5.單行對數寫法如右，例如：\(\log_{2}{64}\) 寫成 log(64,2) 或 log(64)/log(2) 。</span><br>
+      <span>6.特殊集合寫法如：空集 和 R  。</span><br>
+      <span>7.每題10分。內設基準時間，提前完成加分，超時完成扣分。</span><br>
+      <span>8.一次測驗必須做滿10題，然後電腦自動填寫報表。</span><br>
+     </div>
+    </div>
+    <div style="width:266px;height:490px;position:static;background-color:#e9fdd9;z-index:10;">
+      <div style="width:260px;height:200px;position:relative;left:5px;top:10px;float:none;display:table;font-size:16px"> 
+        <img id="pyplotfigure" style="height:200px;max-width: 260px">
+      </div>    
+      <br>
+      <br>
+      <table id="rec_history" class="Table" style="width:260px;">
+        <tr class="TableRow" style="float:none">
+          <th class="TableTitle">題號</th>
+          <th class="TableTitle">對/錯</th>
+          <th class="TableTitle">耗時</th>
+          <th class="TableTitle">得分</th>
+        </tr>
+      </table>
+    </div>
+   </div>
+ </div>
+</div>
+<button onclick="document.getElementById('CodeIDE').style.display='none';">X</button>
+<button onclick="document.getElementById('CodeIDE').style.display='block';">口</button>
+<button onclick="show_msgbox('msgbox');">?</button>
+<div id="CodeIDE" style="width:600px;height:640px;background-color:#cdf2ff;position:absolute;left:700px;top:0px;display:none;">
+<textarea id="code" rows="5" style="width: 100%;font-size:16px;">
+import sympy as sp
+from sympy import lambdify
+import numpy as np
+import matplotlib.pyplot as plt
+import io, base64        
+sample_nums=list(range(-10,10))
+sample_nums.remove(0)
+a,b,c = np.random.choice(sample_nums, 3)
+x=sp.Symbol('x')
+d=b*b-4*a*c
+Val= 1 if d>0 else 2 if d==0 else 3    
+St=sp.Eq(a*x*x+b*x+c)
+Stmt=sp.latex(St)
+fig, ax = plt.subplots()
+lam_x = lambdify(x, a*x*x+b*x+c, modules=['numpy'])
+x_vals = np.linspace(-10, 10, 100)
+y_vals = lam_x(x_vals)
+ax.plot(x_vals, y_vals)
+buf = io.BytesIO()
+fig.savefig(buf, format='png')
+buf.seek(0)
+img_str = 'data:image/png;base64,' + base64.b64encode(buf.read()).decode('UTF-8')    
+try:
+    convert( ["選擇題:",f"\\text 方程式 {{\\Large {Stmt} }} , 計算判別式。","(1) 有兩個不同的實數根","(2) 一個實數根","(3) 沒有的實數根"] )  
+except:
+    pass
+</textarea>
+<textarea id="code_checkans" rows="5" style="width: 100%;font-size:16px;">
+import sympy as sp
+from sympy.parsing.sympy_parser import parse_expr
+import numpy as np
+import js
+ans=str(js.document.getElementById("Ans1").value)
+if ans.strip()=="" : ans="3.1415926"
+ans=parse_expr(ans)
+ok=0
+mark=0    
+if ans == Val:
+    ok=1
+    mark=1
+js.document.getElementById("Standrad_Ans1").innerHTML=Val    
+try:
+    AddHistoryRec(Val,ok,0,mark)
+except:
+    print("Caught an exception thrown in JavaScript!")    
+    
+</textarea>    
+    <button onclick="evaluatePython()">Run</button>
+    <button onclick="output.value='';window.console.clear();">Clear</button>
+    <br />
+    <br />
+    <div>Output:</div>
+    <textarea id="output" style="width: 100%;" rows="2" disabled></textarea>
+</div>
+    
+<div id="msgbox" class="msgcenter" style="display: none;z-index:999 ;overflow-y: auto;">
+      <div id="msgbox_txt">
+            <ul>
+                <li>温故知新(中考題)</li>
+                <li>已知:方程式\( ax^2+bx+c=0, (a,b,c\in R, a \neq 0) \)</li>
+                <li>根之和\( x_1+x_2= -\frac{b}{a} \)</li>    
+                <li>根之積\( x_1 \cdot x_2= \frac{c}{a} \)</li>
+                <li>求根公式$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</li>
+                <li>判別式\( \Delta =  b^2-4ac \)</li>    
+            </ul>  
+            <span>加載中...</span> 
+      </div>
+      <table id="AnsMsgResTable" style="font-size: 12px;" >
+      </table>
+      <div class="msgboxclosebtn">
+          <button onclick="max_msgbox('msgbox')">[M]</button>
+          <button onclick="close_msgbox('msgbox')">[x]</button>
+      </div>  
+</div>     
+    <script>
+      "use strict";
+      //convert('\\frac{a}{b}')   
+      //UpdateMathContent('QContent');        
+      //UpdateMathContent('msgbox_txt');
+      show_msgbox('msgbox');        
+      function sleep(s) {
+        return new Promise((resolve) => setTimeout(resolve, s));
+      }
+      const output = document.getElementById("output");
+      const code = document.getElementById("code");
+      const code_checkans = document.getElementById("code_checkans");        
+      function addToOutput(s) {  if(s)  output.value +=  s + "\n";  }
+
+      addToOutput("Initializing...");
+      // init Pyodide
+      async function main() {
+        let indexURL="/static/pyodide/"
+        const { loadPyodide } = await import(indexURL + "pyodide.mjs");        
+        let pyodide = await loadPyodide(
+          {
+            stdin: () => { let result = prompt(); addToOutput(result); return result; },
+            stdout:(text)=>{addToOutput(text)},
+            stderr:(text)=>{addToOutput(text)},
+          }          
+        );
+        await pyodide.loadPackage("numpy");
+        await pyodide.loadPackage("sympy");
+        await pyodide.loadPackage("matplotlib");     
+        await pyodide.runPythonAsync(`
+          #import sympy as sp
+          #from sympy import lambdify
+          #import numpy as np
+          #import matplotlib.pyplot as plt
+          import io, base64        
+          import js
+          import sys
+          div = js.document.getElementById("QContent")
+          div.innerHTML =div.innerHTML+ "加載完成。[下一題]"
+        `
+        );
+        pyodide.globals.set("AddHistoryRec", AddHistoryRec);
+        pyodide.globals.set("Latex2Html", Latex2Html);
+        pyodide.globals.set("convert",convert);
+        close_msgbox('msgbox');
+        $('#btnNext1').css("display","block");           
+        output.value += "Ready!\n";
+        return pyodide;
+      }
+      var pyodideReadyPromise = main();
+      //async function main() {
+      //  //let indexURL="/static/pyodide/"
+      //  //const { loadPyodide } = await import(indexURL + "pyodide.mjs");
+      //  globalThis.loadPyodide = loadPyodide;
+      //  globalThis.pyodide = await loadPyodide(
+      //    {
+      //      stdin: () => { let result = prompt(); addToOutput(result); return result; },
+      //      stdout:(text)=>{addToOutput(text)},
+      //      stderr:(text)=>{addToOutput(text)},
+      //    }
+      //  );
+      //  globalThis.namespace = globalThis.pyodide.globals.get("dict")();       
+      //  //await globalThis.pyodide.loadPackage(["numpy","sympy","matplotlib"]);
+      //  await globalThis.pyodide.loadPackage("numpy");
+      //  await globalThis.pyodide.loadPackage("sympy");
+      //  await globalThis.pyodide.loadPackage("matplotlib");
+      //  await globalThis.pyodide.runPythonAsync(`
+      //    import sympy as sp
+      //    from sympy import lambdify
+      //    import numpy as np
+      //    import matplotlib.pyplot as plt
+      //    import io, base64        
+      //    import js
+      //    import sys
+      //    div = js.document.getElementById("QContent")
+      //    div.innerHTML =div.innerHTML+ "加載完成。[下一題]"
+      //  `,
+      //  { globals: namespace },
+      //  );
+      //  globalThis.pyodide.globals.set("AddHistoryRec", AddHistoryRec);
+      //  globalThis.pyodide.globals.set("Latex2Html", Latex2Html);
+      //  globalThis.pyodide.globals.set("convert",convert);
+      //  namespace.destroy();
+      //  close_msgbox('msgbox');
+      //  $('#btnNext1').css("display","block");
+      //};
+      //window.console_ready =main();    
+      function showCtx(x)  
+      {
+         $('#QContent').html("...");
+         $('#Standrad_Ans1').html("");
+         $('#Ans1').val("");
+         evaluatePython();
+         $('#btnNext1').css("display","none");
+         $('#btnSubm1').css("display","block");
+      }
+
+      async function evaluatePython() {
+        let pyodide = await pyodideReadyPromise;
+        try {
+          let output = pyodide.runPython(code.value);
+          addToOutput(output);
+        } catch (err) {
+          addToOutput(err);
+        }
+        document.getElementById("pyplotfigure").src=pyodide.globals.get("img_str")
+      }
+      
+    </script>
+</body>
+</html>
