@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>jQuery UI Slider - Custom handle</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <style>
+    #custom-handle {
+      width: 3em;
+      height: 1.6em;
+      top: 50%;
+      margin-top: -.8em;
+      text-align: center;
+      line-height: 1.6em;
+    }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js"></script>
+    <script>
+    $( function() {
+      var handles = [];
+      var sliders=[];
+      for(let idx of ["1","2","3"]){
+        handles.push( $( "#custom-handle"+idx ));
+        sliders.push( $( "#slider"+idx ));
+      }
+      for(let idx in ["1","2","3"]){
+        console.log(sliders[idx])
+        sliders[idx].slider({
+        animate: "fast",
+        max: 30,
+        min: 3,
+        range: false,
+        step: 1,
+        h_:null,
+        create: function() {
+          $( this ).slider("option", "h_",handles[idx])
+          $( this ).slider("option", "h_").text( $( this ).slider( "value" ) );
+        },
+        slide: function( event, ui ) {
+          $( this ).slider("option", "h_").text( ui.value );
+          console.log(handles[0].text(),handles[1].text(),handles[2].text())
+          evaluatePython();
+        }
+      });
+    }
+  });
+    </script>
+  </head>
+<body>
+  <table>
+    <tr>
+      <td>
+        <span>....................................................</span>
+        <div id="slider1">
+          <div id="custom-handle1" class="ui-slider-handle"></div>
+        </div>
+         <br>
+        <div id="slider2">
+          <div id="custom-handle2" class="ui-slider-handle"></div>
+        </div>
+        <br>
+        <div id="slider3">
+          <div id="custom-handle3" class="ui-slider-handle"></div>
+        </div>
+        <br>
+      </td>
+      <td>
+        <div id="textfield">A matplotlib figure:</div>
+        <div id="pyplotdiv"><img style="display:block" id="pyplotfigure"/></div>
+        <div id="plot"></div>
+      </td>
+    </tr>
+    <script type="text/javascript">
+      "use strict";
+      const code_plot=
+      `
+      import io, base64 
+      import js
+      from js import document
+      ans1=int(js.document.getElementById("custom-handle1").innerText)
+      ans2=int(js.document.getElementById("custom-handle2").innerText)
+      ans3=int(js.document.getElementById("custom-handle3").innerText)
+      print(ans1,ans2,ans3)
+      document.pyodideMplTarget = js.document.getElementById("plot")   
+      import matplotlib
+      import numpy as np  
+      #matplotlib.use("module://matplotlib_pyodide.html5_canvas_backend")
+      matplotlib.use('Agg')
+      import matplotlib.pyplot as plt
+      # Create figure and axis
+      fig, ax = plt.subplots()
+      x = np.linspace(0, ans1 * np.pi, 100)
+      line, = ax.plot(x, np.sin(x))
+      ax.set_ylim(-1.5, 1.5)
+      ax.set_title("Interactive Sine Wave Animation")
+      # Display the plot (automatically renders to the specified div)
+      # plt.show()  
+      buf = io.BytesIO()
+      plt.savefig(buf, format='png', bbox_inches="tight")
+      plt.close()
+      buf.seek(0)
+      img_str = 'data:image/png;base64,' + base64.b64encode(buf.read()).decode('UTF-8')               
+      `;
+      function sleep(s) {
+        return new Promise((resolve) => setTimeout(resolve, s));
+      }
+
+      async function main() {
+        console.log("start")
+        let term;
+
+      globalThis.pyodide = await loadPyodide({
+          stdin: () => {
+            let result = prompt();
+            echo(result);
+            return result;
+          },
+        });
+        let namespace = pyodide.globals.get("dict")();
+        await pyodide.loadPackage(["numpy","sympy","matplotlib"]);
+
+        await pyodide.runPython(code_plot
+                ,
+          { globals: namespace }
+        );
+        document.getElementById("pyplotfigure").src=namespace.get("img_str")
+      }
+      async function evaluatePython() {
+        try {
+          let output =await globalThis.pyodide.runPythonAsync(code_plot
+            
+            );
+        } catch (err) {
+        }
+        document.getElementById("pyplotfigure").src=pyodide.globals.get("img_str")
+        //UpdateMathContent('QContent');
+      }
+      main();
+    </script>
+  </body>
+</html>
