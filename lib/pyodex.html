@@ -1,12 +1,13 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>jQuery UI Slider - Custom handle</title>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
-    <style>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slider - Matplotlib</title>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <style>
     #custom-handle {
       width: 3em;
       height: 1.6em;
@@ -15,50 +16,53 @@
       text-align: center;
       line-height: 1.6em;
     }
-    </style>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js"></script>
-    <script>
-    $( function() {
-      var handles = [];
-      var sliders=[];
-      for(let idx of ["1","2","3"]){
-        handles.push( $( "#custom-handle"+idx ));
-        sliders.push( $( "#slider"+idx ));
-      }
-      for(let idx in ["1","2","3"]){
-        console.log(sliders[idx])
-        sliders[idx].slider({
-        animate: "fast",
-        max: 30,
-        min: 3,
-        range: false,
-        step: 1,
-        h_:null,
-        create: function() {
-          $( this ).slider("option", "h_",handles[idx])
-          $( this ).slider("option", "h_").text( $( this ).slider( "value" ) );
-        },
-        slide: function( event, ui ) {
-          $( this ).slider("option", "h_").text( ui.value );
-          console.log(handles[0].text(),handles[1].text(),handles[2].text())
-          evaluatePython();
-        }
-      });
+  </style>
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js"></script>
+  <script>
+    "use strict";
+    function sleep(s) {
+      return new Promise((resolve) => setTimeout(resolve, s));
     }
-  });
-    </script>
-  </head>
+    $(function () {
+      var handles = [];
+      var sliders = [];
+      for (let idx of ["1", "2", "3"]) {
+        handles.push($("#custom-handle" + idx));
+        sliders.push($("#slider" + idx));
+      }
+      for (let idx in ["1", "2", "3"]) {
+        sliders[idx].slider({
+          animate: "fast",
+          max: 30,
+          min: 3,
+          range: false,
+          step: 1,
+          h_: null,
+          create: function () {
+            $(this).slider("option", "h_", handles[idx])
+            $(this).slider("option", "h_").text($(this).slider("value"));
+          },
+          slide: function (event, ui) {
+            $(this).slider("option", "h_").text(ui.value);
+            evaluatePython();
+          }
+        });
+      }
+    });
+  </script>
+</head>
+
 <body>
   <table>
     <tr>
       <td>
-        <span>....................................................</span>
+        <p>....................................................</p>
         <div id="slider1">
           <div id="custom-handle1" class="ui-slider-handle"></div>
         </div>
-         <br>
+        <br>
         <div id="slider2">
           <div id="custom-handle2" class="ui-slider-handle"></div>
         </div>
@@ -70,14 +74,13 @@
       </td>
       <td>
         <div id="textfield">A matplotlib figure:</div>
-        <div id="pyplotdiv"><img style="display:block" id="pyplotfigure"/></div>
+        <div id="pyplotdiv"><img style="display:block" id="pyplotfigure" /></div>
         <div id="plot"></div>
       </td>
     </tr>
     <script type="text/javascript">
       "use strict";
-      const code_plot=
-      `
+      const code_plot = `
       import io, base64 
       import js
       from js import document
@@ -103,17 +106,10 @@
       plt.savefig(buf, format='png', bbox_inches="tight")
       plt.close()
       buf.seek(0)
-      img_str = 'data:image/png;base64,' + base64.b64encode(buf.read()).decode('UTF-8')               
-      `;
-      function sleep(s) {
-        return new Promise((resolve) => setTimeout(resolve, s));
-      }
-
+      img_str = 'data:image/png;base64,' + base64.b64encode(buf.read()).decode('UTF-8')`;
       async function main() {
         console.log("start")
-        let term;
-
-      globalThis.pyodide = await loadPyodide({
+        globalThis.pyodide = await loadPyodide({
           stdin: () => {
             let result = prompt();
             echo(result);
@@ -121,25 +117,20 @@
           },
         });
         let namespace = pyodide.globals.get("dict")();
-        await pyodide.loadPackage(["numpy","sympy","matplotlib"]);
-
-        await pyodide.runPython(code_plot
-                ,
-          { globals: namespace }
-        );
-        document.getElementById("pyplotfigure").src=namespace.get("img_str")
+        await pyodide.loadPackage(["numpy", "sympy", "matplotlib"]);
+        await pyodide.runPython(code_plot, { globals: namespace });
+        document.getElementById("pyplotfigure").src = namespace.get("img_str")
       }
       async function evaluatePython() {
         try {
-          let output =await globalThis.pyodide.runPythonAsync(code_plot
-            
-            );
+          let output = await globalThis.pyodide.runPythonAsync(code_plot);
         } catch (err) {
+          console.log(err);
         }
-        document.getElementById("pyplotfigure").src=pyodide.globals.get("img_str")
-        //UpdateMathContent('QContent');
+        document.getElementById("pyplotfigure").src = pyodide.globals.get("img_str")
       }
       main();
     </script>
-  </body>
+</body>
+
 </html>
