@@ -190,7 +190,7 @@ class iMarkCalC_Act {
     /*
     * Export Agg_data -> dataSet
     */
-    method_assignTo(dataSet) {
+    method_assignTo(dataSet,cno="") {
         this.mark1 = Math.round(this.mark1 / this.crs_cnt * 100) / 100;
         this.mark2 = Math.round(this.mark2 / this.crs_cnt * 100) / 100;
         this.mark3 = Math.round(this.mark3 / this.crs_cnt * 100) / 100;
@@ -200,6 +200,23 @@ class iMarkCalC_Act {
         this.allpass3 = this.pass3_cnt == this.crs_cnt ? 1 : 0;
         for (let k in this)
             if (k.indexOf("_cnt") < 0 && k.indexOf("method_") < 0) dataSet[k] = this[k];
+        let [se1,sh1]=iMarkCalC_Act.GetEval(cno,this.allpass1,this.mark1,dataSet.conduct1,dataSet.wrg_later1,dataSet.wrg_absence1,dataSet.wrg_truancy_t1)
+        let [se2,sh2]=iMarkCalC_Act.GetEval(cno,this.allpass2,this.mark2,dataSet.conduct2,dataSet.wrg_later2,dataSet.wrg_absence2,dataSet.wrg_truancy_t2)
+        let [se3,sh3]=iMarkCalC_Act.GetEval(cno,this.allpass3,this.mark ,dataSet.conduct3,dataSet.wrg_later3,dataSet.wrg_absence3,dataSet.wrg_truancy_t3)
+        dataSet["SchoolEval1"]=se1; 
+        dataSet["SchoolEval2"]=se2;
+        dataSet["SchoolEval3"]=se3; 
+        dataSet["SE_HONOR1"]=sh1;
+        dataSet["SE_HONOR2"]=sh2;
+        dataSet["SE_HONOR3"]=sh3;
+        let totalWrg =  Number(dataSet["WrgMarks1"]) +
+                        Number(dataSet["WrgMarks2"]) +
+                        Number(dataSet["WrgMarks3"]);
+        dataSet["conduct"]= iMarkCalC_Act.CalcAvgConduct(
+            dataSet["conduct1"], 
+            dataSet["conduct2"], 
+            dataSet["conduct3"],
+            totalWrg);
 
     }
     /*
@@ -231,25 +248,42 @@ class iMarkCalC_Act {
         r.total = Math.round(r.total * 100) / 100;
         // Math.round((num + Number.EPSILON) * 100) / 100
     }
-    static method_NoOfConduct(conduct) {
-        let cd = conduct.Trim().Replace("＋", "+").Replace("－", "-").Replace("一", "-");
+    static NoOfConduct(conduct) {
+        let cd = conduct.trim().replace("＋", "+").replace("－", "-").replace("一", "-");
         let rule = "丙-,丙,丙+,乙-,乙,乙+,甲-,甲";
-        let ra = rule.Split(',');
+        let ra = rule.split(',');
         for (let i = 0; i < ra.length; i++) {
-            if (ra[i].Equals(cd)) return i;
+            if (ra[i]==cd) return i;
         }
         return -1;
     }
-    static method_ConductOfNo(c) {
+    static ConductOfNo(c) {
         if (c < 0) return "";
         let rule = "丙-,丙,丙+,乙-,乙,乙+,甲-,甲";
-        let ra = rule.Split(',');
-        if (c >= ra.Length) c = ra.Length - 1;
+        let ra = rule.split(',');
+        if (c >= ra.length) c = ra.length - 1;
         return ra[c];
     }
+    static CalcAvgConduct(conduct1, conduct2, conduct3, wrgMarks=0)
+    {
+        let c1 = iMarkCalC_Act.NoOfConduct(conduct1);
+        let c2 = iMarkCalC_Act.NoOfConduct(conduct2);
+        let c3 = iMarkCalC_Act.NoOfConduct(conduct3);
+        if (c3 == -1) return "";
+        let avgc = (c1 + c2 + c3) / 3;
+        /***************************************
+         * if (avgc > 5 && wrgMarks > 0) avgc = 5;暫定未执行
+         * 日期:2021年7月14日,鄭生申請,按第一二三段操行規定,延伸學年平均操行。
+         * logby.eddylin.20210704
+         ***************************************/
+        if (avgc > 5 && wrgMarks > 0) avgc = 5;
+        //console.log(`${wrgMarks},${avgc0}`);
+        return iMarkCalC_Act.ConductOfNo(avgc);
+    }
+
     static GetEval(cno, allpass, mark, conduct, later, absence, truancy) {
         let EvalAddHonorInt = 0;
-        cno = cno.ToUpper();
+        cno =  cno.toUpperCase();
         let HonorEvalDESC_ARR = ["品學卓越生\n", "品學兼優生\n", "品行優異生\n", "學業優異生\n", "勤學生\n"];
         let SMg = [85, 80, 75];
         let PMg = [101, 85, 75];
@@ -287,7 +321,7 @@ class TMarkCalC_Act extends iMarkCalC_Act {
     constructor() {
         super();
     }
-    method_assignTo(dataSet) {
+    method_assignTo(dataSet,cno="") {
         if (this.voca_cult_cnt > 0 && this.voca_prof_cnt > 0) {
             this.voca_cult_avg1 /= this.voca_cult_cnt;
             this.voca_cult_avg2 /= this.voca_cult_cnt;
@@ -300,7 +334,7 @@ class TMarkCalC_Act extends iMarkCalC_Act {
             this.voca_prof_avg /= this.voca_prof_cnt;
             this.voca_prof_mue /= this.voca_prof_cnt;
         }
-        super.method_assignTo(dataSet)
+        super.method_assignTo(dataSet,cno)
     }
     method_agg_data(ro) {
         super.method_agg_data(ro);
@@ -366,7 +400,7 @@ function MarkIterateCalc(ds, ng_dict, iCalc = null, cno = "S") {
             }
         })
         if (mk_group.length > 0) throw new Error("mk_group is not empty!");
-        cd_set.method_assignTo(cd[0])
+        cd_set.method_assignTo(cd[0],cno)
 
     }
     cd_set.method_rank(ds)
@@ -385,7 +419,6 @@ function mk_adpt_Update(ds, tablename = "mk") {
             getModel().DataReaderQuery(sql, [data, r.stud_c_id], (err, results) => {/*console.log(err,results)*/ })
         }
     }
-    let mk_u_sql = `update mrs_stud_course set total1=?,total2=?,total3=?,total=?,VOCA_MUE=?,sub_c_p=?,P_X=?,eog=? where stud_c_id=?`;
 }
 function cd_adpt_Update(ds, tablename = "cd") {
     let sql = "update mrs_stud_conduct set ? where stud_ref=?;"
@@ -411,16 +444,19 @@ function cd_adpt_Update(ds, tablename = "cd") {
                 allpass1: 0,
                 allpass2: 0,
                 allpass3: 0,
+                SchoolEval1:"", 
+                SchoolEval2:"",
+                SchoolEval3:"", 
+                SE_HONOR1:0,
+                SE_HONOR2:0,
+                SE_HONOR3:0,
+                conduct:""
             }
             for (let k in data) data[k] = r[k];
             getModel().DataReaderQuery(sql, [data, r.stud_ref], (err, results) => {/*console.log(err,results)*/ })
         }
     }
-    let cd_u_sql = `update mrs_stud_conduct set mark1=?,mark2=?,mark3=?,
-    mark=?,total_crs_ncp=?,voca_cult_avg1=?,voca_cult_avg2=?,voca_cult_avg3=?,voca_cult_avg=?,
-    voca_cult_mue=?,voca_prof_avg1=?,voca_prof_avg2=?,voca_prof_avg3=?, voca_prof_avg=?, voca_prof_mue=?,
-    allpass1=?,allpass2=?,allpass3=?, SchoolEval1=?, SchoolEval2=?,  SchoolEval3=?, conduct=?
-    where stud_ref=?`;
+    //`SchoolEval1=?, SchoolEval2=?,  SchoolEval3=?, conduct=?
 }
 
 function cross_tbl_SecTerm(std_dt, crs_dt, ng_dict, ds) {
@@ -512,17 +548,15 @@ async function GetMrkTblSet(classno, iCalc = null, calcflag = true, updateflag =
         }
         ds.push(row)
     }
+        
     if (calcflag) {
-        MarkIterateCalc(ds, ng_dict, iCalc)
+        MarkIterateCalc(ds, ng_dict, iCalc,classno)
         if (updateflag) {
             mk_adpt_Update(ds, "mk");
             cd_adpt_Update(ds, "cd");
         }
     }
-    fs.writeFileSync('ds.txt', JSON.stringify(ds));
-    fs.writeFileSync('ng_dict.txt', JSON.stringify(ng_dict));
-    fs.writeFileSync('crs_dt.txt', JSON.stringify(crs_dt));
-    fs.writeFileSync('std_dt.txt', JSON.stringify(std_dt));
+
     return [std_dt, crs_dt, ng_dict, ds];
 }
 
@@ -536,3 +570,7 @@ module.exports = {
 
 GenSummaryTbl('SC1E', 1);
 
+    //fs.writeFileSync('ds.txt', JSON.stringify(ds));
+    //fs.writeFileSync('ng_dict.txt', JSON.stringify(ng_dict));
+    //fs.writeFileSync('crs_dt.txt', JSON.stringify(crs_dt));
+    //fs.writeFileSync('std_dt.txt', JSON.stringify(std_dt));
