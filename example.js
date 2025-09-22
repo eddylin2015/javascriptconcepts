@@ -174,6 +174,14 @@ const url_="http://macaodaily.com/html/2025-02/05/node_2.htm"; /* fetch(url_) */
     /*** reduce */
     const sum = numbers.reduce((accumulater, n) => accumulater + n, 0);
     console.log(sum, numbers); //6    
+    const inventory = [
+    { name: "asparagus", type: "vegetables", quantity: 5 },
+    { name: "bananas", type: "fruit", quantity: 0 },
+    { name: "goat", type: "meat", quantity: 23 },
+    { name: "cherries", type: "fruit", quantity: 5 },
+    { name: "fish", type: "meat", quantity: 22 },];
+    const result = Object.groupBy(inventory, ({ type }) => type);
+    console.log(Object.keys(result))
   })();
   /** 20. Pure Functions,Side Effects,State Mutation,Event Propagation */
   (function () {
