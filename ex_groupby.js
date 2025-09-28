@@ -119,7 +119,7 @@ const people = [
     (function () {
         const peopleByAge = Object.groupBy(people, (person) => person.age);
         // This will throw an error
-        console.log(peopleByAge.hasOwnProperty("28"));
+        // console.log(peopleByAge.hasOwnProperty("28"));
         // TypeError: peopleByAge.hasOwnProperty is not a function
         // Instead, use Object methods directly
         console.log(Object.hasOwn(peopleByAge, "28")); // true
@@ -381,6 +381,11 @@ const people = [
     /*  Wait, that won’t work! Remember that Map keys use reference equality, not structural equality.Here’s the corrected version:
     */
     (function () {
+        const dates = [
+            new Date("2023-01-15"),
+            new Date("2023-01-20"),
+            new Date("2023-02-10")
+        ];
         // Create month identifier dates first
         const jan2023 = new Date(2023, 0, 1);
         const feb2023 = new Date(2023, 1, 1);
@@ -520,7 +525,6 @@ For production applications that need to support older environments, you’ll ne
 
         //GroupBy one-liner, an ES2021 solution
         const groupBy = (x, f) => x.reduce((a, b, i) => ((a[f(b, i, x)] ||= []).push(b), a), {});
-        const groupBy = (x, f) => x.reduce((a, b, i) => ((a[f(b, i, x)] ||= []).push(b), a), {});
         // f -> should must return string/number because it will be use as key in object
 
         // for demo
@@ -592,25 +596,27 @@ For production applications that need to support older environments, you’ll ne
                 a.get(k)?.push(b) ?? a.set(k, [b]);
                 return a;
             }, new Map());
+        const initialArray = [{ id: 1, name: "Steve", age: 20 }, { id: 2, name: "Alice" }];
         const groupedMap = initialArray.reduce(
             (entryMap, e) => entryMap.set(e.id, [...entryMap.get(e.id) || [], e]),
             new Map()
         );
         const objsToMerge = [{ id: 1, name: "Steve" }, { id: 2, name: "Alice" }, { id: 1, age: 20 }];
+
         // The following variable should be created automatically
-        const mergedArray = [{ id: 1, name: "Steve", age: 20 }, { id: 2, name: "Alice" }]
+        //const mergedArray = [{ id: 1, name: "Steve", age: 20 }, { id: 2, name: "Alice" }]
         const mergedArray = Array.from(
             objsToMerge.reduce(
                 (entryMap, e) => entryMap.set(e.id, { ...entryMap.get(e.id) || {}, ...e }),
                 new Map()
             ).values()
         );
-        const groupedMap = new Map();
+        const groupedMap_ = new Map();
         for (const e of initialArray) {
-            let thisList = groupedMap.get(e.type);
+            let thisList = groupedMap_.get(e.type);
             if (thisList === undefined) {
                 thisList = [];
-                groupedMap.set(e.type, thisList);
+                groupedMap_.set(e.type, thisList);
             }
             thisList.push(e);
         }
