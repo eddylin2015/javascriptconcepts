@@ -426,3 +426,57 @@ class MyClass { ... }
 ```
 Array.fromAsync() — Create array from async iterable.
 Iterator Helpers — Like .map(), .filter() for iterators.
+
+## Understanding JavaScript Generator and Yield
+```javacript
+function* simpleGenerator() {
+  yield 'Hello';
+  yield 'World';
+  yield '!';
+}
+// Create the generator object
+const generator = simpleGenerator();
+// Use .next() to run the function until the next yield
+console.log(generator.next()); // { value: 'Hello', done: false }
+console.log(generator.next()); // { value: 'World', done: false }
+console.log(generator.next()); // { value: '!', done: false }
+console.log(generator.next()); // { value: undefined, done: true }
+
+function* infiniteNumbers() {
+  let n = 0;
+  while (true) {
+    yield n++;
+  }
+}
+
+const numbers = infiniteNumbers();
+console.log(numbers.next().value); // 0
+console.log(numbers.next().value); // 1
+console.log(numbers.next().value); // 2
+// This can go on forever without crashing
+// This is a conceptual example
+function* fetchUserData() {
+  // `yield` pauses until the Promise resolves
+  const user = yield fetch('/api/user');
+  const posts = yield fetch(`/api/posts/${user.id}`);
+  return posts;
+}
+
+// A helper function would run this generator, waiting for each yielded Promise
+// runGenerator(fetchUserData);
+function* generatorA() {
+  yield 'a';
+  yield 'b';
+}
+
+function* generatorB() {
+  yield 'x';
+  yield* generatorA(); // Delegates to generatorA
+  yield 'y';
+}
+
+// Equivalent to yielding: 'x', 'a', 'b', 'y'
+const genB = generatorB();
+console.log([...genB]); // ['x', 'a', 'b', 'y'] (using spread operator)
+```
+
