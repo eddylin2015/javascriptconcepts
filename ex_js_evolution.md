@@ -1,24 +1,24 @@
-JavaScript 2009年的核心更新是ECMAScript 5（ES5） 的正式发布，重要里程碑：
+# JavaScript 演化
+## JavaScript 2009年的核心更新是ECMAScript 5（ES5） 的正式发布，重要里程碑：
  
 - 严格模式（Strict Mode）： "use strict"; 
- 
 - 数组方法增强：新增多个遍历和操作数组的方法，覆盖常见场景：
--  forEach() ：遍历数组并执行回调，替代传统 for 循环；
--  map() ：对数组元素执行映射操作，返回新数组；
--  filter() ：筛选满足条件的元素，返回新数组；
--  reduce() / reduceRight() ：累加数组元素，实现求和、分组等复杂逻辑；
--  some() / every() ：判断数组是否存在/全部满足条件的元素，返回布尔值；
--  indexOf() / lastIndexOf() ：查找元素在数组中的索引，支持从末尾反向查找。
+*  forEach() ：遍历数组并执行回调，替代传统 for 循环；
+*  map() ：对数组元素执行映射操作，返回新数组；
+*  filter() ：筛选满足条件的元素，返回新数组；
+*  reduce() / reduceRight() ：累加数组元素，实现求和、分组等复杂逻辑；
+*  some() / every() ：判断数组是否存在/全部满足条件的元素，返回布尔值；
+*  indexOf() / lastIndexOf() ：查找元素在数组中的索引，支持从末尾反向查找。
 - 对象操作优化：
--  Object.keys() ：返回对象所有可枚举属性的键名数组；
--  Object.defineProperty() ：精细化定义对象属性（如设置是否可写、可枚举、可配置），为后续框架（如Vue 2）的响应式原理奠定基础；
--  Object.getPrototypeOf() / Object.setPrototypeOf() ：安全访问和修改对象原型；
--  Object.create() ：基于指定原型创建新对象，简化原型继承。
+*  Object.keys() ：返回对象所有可枚举属性的键名数组；
+*  Object.defineProperty() ：精细化定义对象属性（如设置是否可写、可枚举、可配置）
+*  Object.getPrototypeOf() / Object.setPrototypeOf() ：安全访问和修改对象原型；
+*  Object.create() ：基于指定原型创建新对象，简化原型继承。
 - JSON原生支持：新增全局 JSON 对象，提供 JSON.parse() 和 JSON.stringify() 
 - 函数绑定方法： Function.prototype.bind() ：创建一个新函数，将原函数的 this 绑定到指定对象，同时预设部分参数，解决异步场景中 this 指向丢失问题。
 - 日期方法补充： Date.now() ：直接返回当前时间的时间戳（毫秒数），替代 new Date().getTime()
-- 
-JavaScript 2014（ES2014）是JavaScript语言规范的一个过渡版本：
+ 
+## JavaScript 2014（ES2014）是JavaScript语言规范的过渡版本：
  
 - Array.prototype.values()：返回一个新的数组迭代器对象，用于遍历数组的元素值。可配合 for...of 循环使用，例如 const arr = [1, 2, 3]; for (const val of arr.values()) { console.log(val); } ，依次输出 1 、 2 、 3 。
  
@@ -28,20 +28,19 @@ JavaScript 2014（ES2014）是JavaScript语言规范的一个过渡版本：
  
 - Object.prototype.__proto__属性标准化：正式将 __proto__ 属性纳入规范（此前是浏览器非标准实现），用于访问或修改对象的原型，但规范同时建议优先使用 Object.getPrototypeOf() 和 Object.setPrototypeOf() 进行原型操作，以避免直接修改 __proto__ 可能带来的性能和兼容性问题。
  
-- 函数参数默认值的早期支持（非完整实现）：ES2014对函数参数默认值进行了初步探索，但未形成完整规范，该特性最终在ES2015（2015年）中正式定案并完善。
 
-JavaScript 2015（ES2015）是JavaScript语言的一个重要版本：
+## JavaScript 2015（ES2015）是JavaScript语言的一个重要版本：
  
 块级作用域变量声明： let 用于声明块级作用域的变量。 const 用于声明块级作用域的常量。
  
 箭头函数：语法简洁，省略了 function 关键字，用 => 连接参数和函数体。箭头函数没有自己的 this ， this 继承自外层作用域，且不具备 arguments 对象，也不能作为构造函数使用。
  
 模板字符串：使用反引号（ `）包裹， 
+```js
  const name = 'Alice';
  const age = 25;
- const message =  `My name is ${name}, 
-and I am ${age} years old. ;`。
- 
+ const message =  `My name is ${name}, and I am ${age} years old. ;`。
+``` 
 解构赋值：可从数组或对象中提取值并赋值给变量。数组解构如 const arr = [10, 20, 30]; const [x, y, z] = arr; ，对象解构如 const obj = {name: 'Tom', age: 18}; const {name, age} = obj; 。
  
 类（Classes）：引入了基于类的面向对象编程语法，是原型继承的语法糖。
@@ -51,26 +50,34 @@ and I am ${age} years old. ;`。
 还支持getter/setter和静态方法。
  
 模块化：提供了标准化的模块系统，通过 export 导出模块功能，import 导入模块，
-// math.js 
-export function sum(a, b) { return a + b; } 
-// main.js 
-import {sum} from './math.js'; 。
- 
+
+```js
+  // math.js 
+  export function sum(a, b) { return a + b; } 
+  // main.js 
+  import {sum} from './math.js'; 。
+```
+
 Promise：用于处理异步操作，解决了回调地狱问题。pending 、 fulfilled 和 rejected 三种状态，可通过 then 方法处理成功结果， catch 方法处理错误。
  
 迭代器和生成器：迭代器是一种具有 next() 和 Symbol.iterator 方法的对象，可用于遍历数据结构。生成器函数通过 function* 声明，使用 yield 关键字返回值，可暂停和恢复执行。
  
-增强的对象字面量：允许在对象字面量中直接使用变量和表达式，支持属性简写、方法简写、计算属性名等，如 const name = 'Alice'; const age = 25; const person = {name, age, sayHi() { console.log( Hi, I'm ${this.name} ); }}; 。
+增强的对象字面量：允许在对象字面量中直接使用变量和表达式，支持属性简写、方法简写、计算属性名等，如 
+```js
+const name = 'Alice'; 
+const age = 25; 
+const person = {name, age, sayHi() { console.log( Hi, I'm ${this.name} ); }};
+```
  
 默认参数、剩余参数和扩展运算符：函数参数可设置默认值，如 function createUser(name = 'Guest', isAdmin = false) {} 。剩余参数用 ... 表示，可将多个参数收集为数组，如 function sum(...numbers) {} 。扩展运算符也用 ... 表示，可将数组展开，如 const nums1 = [1, 2, 3]; const nums2 = [4, 5, 6]; const combined = [...nums1, ...nums2]; 。
 
-JavaScript 2016（ES2016）引入了以下两个新特性：
+## JavaScript 2016（ES2016）引入了以下两个新特性：
  
 - Array.prototype.includes()：用于判断数组是否包含指定元素，返回布尔值。语法为 arr.includes(searchElement, fromIndex) ，其中 searchElement 是待查找元素， fromIndex 为可选的起始索引，负数表示从末尾倒数。与 indexOf() 方法相比， includes() 可以检测 NaN 值，例如 [1, NaN, 3].includes(NaN) 返回 true ，而 [1, NaN, 3].indexOf(NaN) 返回 -1 。
  
 - 指数运算符（）**：提供了更简洁的幂运算方式，语法为 base ** exponent ，等价于 Math.pow(base, exponent) ，且支持链式运算和与赋值运算符组合使用，如 x **= y 等价于 x = x ** y 。例如 2 ** 3 结果为 8 ， 2 ** 3 ** 2 等价于 2 ** (3 ** 2) ，结果为 512 。
 
-JavaScript 2017（ES2017）为开发者带来了一系列实用的新特性，具体如下：
+## JavaScript 2017（ES2017）为开发者带来了一系列实用的新特性，具体如下：
  
 - 字符串填充方法：新增 padStart() 和 padEnd() 方法。可以在字符串的开头或结尾填充指定字符，以达到固定长度，如 'es8'.padStart(5, '0'); 结果为 '00es8' 。
  
@@ -82,7 +89,7 @@ JavaScript 2017（ES2017）为开发者带来了一系列实用的新特性，�
  
 - 共享内存与原子操作： SharedArrayBuffer 和 Atomics 用于多线程并发编程，通常在 Web Workers 中使用，可实现共享内存和原子操作，为处理高并发场景提供了支持。
 
-JavaScript 2018（ES2018）引入了一系列新特性，增强了语言功能和易用性，具体如下：
+## JavaScript 2018（ES2018）增强了语言功能和易用性：
  
 - 异步函数（Async/Await）：让异步编程更直观易读，解决了传统Promise链式调用可读性差、调试难的问题。 async 用于声明异步函数， await 只能在异步函数内使用，用于等待Promise完成。如 async function getData() { let response = await fetch('https://example.com/data'); return response.json(); } 。
  
@@ -98,7 +105,7 @@ JavaScript 2018（ES2018）引入了一系列新特性，增强了语言功能�
  
 - 取消标记模板转义序列的语法限制：在ES2018之前，标记模板字面量中的转义序列有严格语法限制，ES2018取消了部分限制，使标记模板的使用更灵活。
 
-JavaScript 2019（ES2019）为开发者带来了诸多实用的新特性，具体如下：
+## JavaScript 2019（ES2019）实用的新特性：
  
 - 字符串方法增强：新增 trimStart() 和 trimEnd() 方法，分别用于去除字符串开头和结尾的空白字符。例如 let str = "  hello  "; let trimmedStart = str.trimStart(); ， trimmedStart 的值为 "hello  " 。
  
@@ -115,7 +122,8 @@ JavaScript 2019（ES2019）为开发者带来了诸多实用的新特性，具�
 - Function.toString修订： Function.toString() 方法返回的字符串结果更规范，包含函数的参数列表和函数体等完整信息，且不同环境下结果更一致。
  
 - Symbol描述属性： Symbol.prototype 新增 description 属性，可用于访问 Symbol 创建时的描述字符串，如 const sym = Symbol('test'); console.log(sym.description); 会输出 test 。
-JavaScript 2020（ES2020）引入了多个重要特性，提升了代码的编写效率和可读性，具体如下：
+
+## JavaScript 2020（ES2020）引入了多个重要特性，提升了代码的编写效率和可读性，具体如下：
  
 BigInt：允许开发者使用更大的整数表示形式进行数据处理，可突破之前JavaScript中整数存储上限（2^53 - 1）的限制，通过在数字末尾附加 n 来表示，如 100n 。
  
@@ -137,7 +145,7 @@ globalThis：为跨平台JavaScript代码提供了统一的全局对象引用，
  
 import.meta：可用于访问有关模块的元信息，返回一个带有 url 属性的对象，指示模块的基本URL。
 
-JavaScript 2021（ES2021）引入了多个新特性，提升了代码可读性与开发效率，具体如下：
+## JavaScript 2021（ES2021）引入了多个新特性，提升了代码可读性与开发效率，具体如下：
  
 - 逻辑赋值运算符：包括 ||= 、 &&= 和 ??= 。 ||= 在左侧值为假值时执行赋值， &&= 在左侧值为真值时执行赋值， ??= 仅当左侧值为 null 或 undefined 时执行赋值。例如 let count = null; count ??= 10; ，此时 count 的值为 10 。
  
@@ -151,7 +159,7 @@ JavaScript 2021（ES2021）引入了多个新特性，提升了代码可读性�
  
 - WeakRef和FinalizationRegistry： WeakRef 允许创建对对象的弱引用，不会阻止垃圾回收。 FinalizationRegistry 可在垃圾回收器回收对象时执行回调函数，用于更精细的内存管理。
 
-JavaScript 2022（ES2022）为开发者带来了诸多新特性，提升了开发体验与代码质量。具体如下：
+## JavaScript 2022（ES2022）为开发者带来了诸多新特性，提升了开发体验与代码质量。具体如下：
  
 - 顶级await：传统上 await 需在 async 函数内使用，ES2022允许在模块顶层直接使用 await 。例如在获取服务器数据初始化应用状态时，可直接写 const response = await fetch('https://api.example.com/data'); ，简化了代码结构，提高了模块依赖管理效率。
  
@@ -168,7 +176,7 @@ JavaScript 2022（ES2022）为开发者带来了诸多新特性，提升了开�
 此外，ES2022还支持类字段声明、私有方法和字段、静态类字段和静态私有方法等特性，让类的定义和使用更加灵活和安全。
 
 
-JavaScript 2023（ES2023）引入了一些新特性，旨在提升开发效率和代码可读性。具体如下：
+## JavaScript 2023（ES2023）引入了一些新特性，旨在提升开发效率和代码可读性。具体如下：
  
 - 数组方法增强：新增 findLast 和 findLastIndex 方法，可从数组末尾开始查找满足条件的元素及其索引。同时还添加了 toReversed 、 toSorted 、 toSpliced 和 with 四个方法，分别用于返回反转、排序、拼接后的数组副本，以及指定索引处元素被替换后的副本，有助于函数式编程，避免副作用。
  
