@@ -2,18 +2,23 @@
 ## JavaScript 2009年的核心更新是ECMAScript 5（ES5） 的正式发布，重要里程碑：
  
 - 严格模式（Strict Mode）： "use strict"; 
+
 - 数组方法增强：新增多个遍历和操作数组的方法，覆盖常见场景：
-*  forEach() ：遍历数组并执行回调，替代传统 for 循环；
-*  map() ：对数组元素执行映射操作，返回新数组；
-*  filter() ：筛选满足条件的元素，返回新数组；
-*  reduce() / reduceRight() ：累加数组元素，实现求和、分组等复杂逻辑；
-*  some() / every() ：判断数组是否存在/全部满足条件的元素，返回布尔值；
-*  indexOf() / lastIndexOf() ：查找元素在数组中的索引，支持从末尾反向查找。
+
+ *  forEach() ：遍历数组并执行回调，替代传统 for 循环；
+ *  map() ：对数组元素执行映射操作，返回新数组；
+ *  filter() ：筛选满足条件的元素，返回新数组；
+ *  reduce() / reduceRight() ：累加数组元素，实现求和、分组等复杂逻辑；
+ *  some() / every() ：判断数组是否存在/全部满足条件的元素，返回布尔值；
+ *  indexOf() / lastIndexOf() ：查找元素在数组中的索引，支持从末尾反向查找。
+
 - 对象操作优化：
-*  Object.keys() ：返回对象所有可枚举属性的键名数组；
-*  Object.defineProperty() ：精细化定义对象属性（如设置是否可写、可枚举、可配置）
-*  Object.getPrototypeOf() / Object.setPrototypeOf() ：安全访问和修改对象原型；
-*  Object.create() ：基于指定原型创建新对象，简化原型继承。
+
+ *  Object.keys() ：返回对象所有可枚举属性的键名数组；
+ *  Object.defineProperty() ：精细化定义对象属性（如设置是否可写、可枚举、可配置）
+ *  Object.getPrototypeOf() / Object.setPrototypeOf() ：安全访问和修改对象原型；
+ *  Object.create() ：基于指定原型创建新对象，简化原型继承。
+
 - JSON原生支持：新增全局 JSON 对象，提供 JSON.parse() 和 JSON.stringify() 
 - 函数绑定方法： Function.prototype.bind() ：创建一个新函数，将原函数的 this 绑定到指定对象，同时预设部分参数，解决异步场景中 this 指向丢失问题。
 - 日期方法补充： Date.now() ：直接返回当前时间的时间戳（毫秒数），替代 new Date().getTime()
@@ -24,25 +29,30 @@
 
 ```js
 const arr = [1, 2, 3]; 
-for (const val of arr.values()) { console.log(val); } 
-// 依次输出 1 、 2 、 3 。
+for(const val of arr.values()) 
+{ console.log(val); } 
 ``` 
+依次输出 1 、 2 、 3 。
 
 - Array.prototype.entries()：返回一个新的数组迭代器对象，包含数组中每个元素的索引和值组成的数组（即 [index, value] ）。例如 
 ```js
 const arr = ['a', 'b']; 
-for (const [idx, val] of arr.entries()) 
+for(const [idx, val] of arr.entries()) 
 { console.log(idx, val); } 
-//依次输出 0 "a" 、 1 "b" 。
 ```
+依次输出 0 "a" 、 1 "b" 。
  
 - Array.prototype.keys()：返回一个新的数组迭代器对象，用于遍历数组的索引。例如 
 ```js
-const arr = [5, 6, 7]; for (const idx of arr.keys()) { console.log(idx); }//依次输出 0 、 1 、 2 。
+const arr = [5, 6, 7]; 
+for (const idx of arr.keys()) 
+{ console.log(idx); }
 ```
- 
-- Object.prototype.__proto__属性标准化：正式将 __proto__ 属性纳入规范（此前是浏览器非标准实现），用于访问或修改对象的原型，但规范同时建议优先使用 Object.getPrototypeOf() 和 Object.setPrototypeOf() 进行原型操作，以避免直接修改 __proto__ 可能带来的性能和兼容性问题。
- 
+依次输出 0 、 1 、 2 。
+
+- Object.prototype.__proto__属性标准化：
+
+正式将 __proto__ 属性纳入规范（此前是浏览器非标准实现），用于访问或修改对象的原型，但规范同时建议优先使用 Object.getPrototypeOf() 和 Object.setPrototypeOf() 进行原型操作，以避免直接修改 __proto__ 可能带来的性能和兼容性问题。
 
 ## JavaScript 2015（ES2015）是JavaScript语言的一个重要版本：
  
@@ -52,12 +62,20 @@ const arr = [5, 6, 7]; for (const idx of arr.keys()) { console.log(idx); }//依�
  
 模板字符串：使用反引号（ `）包裹， 
 ```js
- const name = 'Alice';
- const age = 25;
- const message =  `My name is ${name}, and I am ${age} years old. ;`。
+const name = 'Alice';
+const age = 25;
+`My name is ${name},
+and I am ${age} years old. ;`
 ``` 
-解构赋值：可从数组或对象中提取值并赋值给变量。数组解构如 const arr = [10, 20, 30]; const [x, y, z] = arr; ，对象解构如 const obj = {name: 'Tom', age: 18}; const {name, age} = obj; 。
- 
+解构赋值：可从数组或对象中提取值并赋值给变量。如 
+```js
+//数组解构
+const arr = [10, 20, 30]; 
+const [x, y, z] = arr; 
+//对象解构如 
+const obj = {name: 'Tom', age: 18}; 
+const {name, age} = obj; 。
+``` 
 类（Classes）：引入了基于类的面向对象编程语法，是原型继承的语法糖。
 包含 constructor 构造函数，
 通过 extends 关键字实现继承，
@@ -67,10 +85,10 @@ const arr = [5, 6, 7]; for (const idx of arr.keys()) { console.log(idx); }//依�
 模块化：提供了标准化的模块系统，通过 export 导出模块功能，import 导入模块，
 
 ```js
-  // math.js 
-  export function sum(a, b) { return a + b; } 
-  // main.js 
-  import {sum} from './math.js'; 。
+// math.js 
+export function sum(a, b) { return a + b; } 
+// main.js 
+import {sum} from './math.js'; 。
 ```
 
 Promise：用于处理异步操作，解决了回调地狱问题。pending 、 fulfilled 和 rejected 三种状态，可通过 then 方法处理成功结果， catch 方法处理错误。
@@ -81,18 +99,31 @@ Promise：用于处理异步操作，解决了回调地狱问题。pending 、�
 ```js
 const name = 'Alice'; 
 const age = 25; 
-const person = {name, age, sayHi() { console.log( Hi, I'm ${this.name} ); }};
+const person = {
+    name, 
+    age, 
+    sayHi() 
+    { 
+        console.log( `Hi, I'm ${this.name}` ); 
+    }
+};
 ```
  
 默认参数、剩余参数和扩展运算符：函数参数可设置默认值，如 
 
 
 ```js
-function createUser(name = 'Guest', isAdmin = false) {}
+function createUser(name = 'Guest', isAdmin = false) 
+{
+    //...
+}
 ```
  。剩余参数用 ... 表示，可将多个参数收集为数组，如 
 ```js
-function sum(...numbers) {}
+function sum(...numbers) 
+{
+    //...   
+}
 ```
  。扩展运算符也用 ... 表示，可将数组展开，如 
 
@@ -104,21 +135,49 @@ const combined = [...nums1, ...nums2];
 
 ## JavaScript 2016（ES2016）引入了以下两个新特性：
  
-- Array.prototype.includes()：用于判断数组是否包含指定元素，返回布尔值。语法为 arr.includes(searchElement, fromIndex) ，其中 searchElement 是待查找元素， fromIndex 为可选的起始索引，负数表示从末尾倒数。与 indexOf() 方法相比， includes() 可以检测 NaN 值，例如 [1, NaN, 3].includes(NaN) 返回 true ，而 [1, NaN, 3].indexOf(NaN) 返回 -1 。
- 
-- 指数运算符（）**：提供了更简洁的幂运算方式，语法为 base ** exponent ，等价于 Math.pow(base, exponent) ，且支持链式运算和与赋值运算符组合使用，如 x **= y 等价于 x = x ** y 。例如 2 ** 3 结果为 8 ， 2 ** 3 ** 2 等价于 2 ** (3 ** 2) ，结果为 512 。
+- Array.prototype.includes()：用于判断数组是否包含指定元素，返回布尔值。语法为 arr.includes(searchElement, fromIndex) ，其中 searchElement 是待查找元素， fromIndex 为可选的起始索引，负数表示从末尾倒数。与 indexOf() 方法相比， includes() 可以检测 NaN 值，例如 
+```js
+[1, NaN, 3].includes(NaN) //返回 true ，
+[1, NaN, 3].indexOf(NaN) //返回 -1 。
+```
+
+- 指数运算符（）**：提供了更简洁的幂运算方式，语法为 base ** exponent ，等价于 Math.pow(base, exponent) ，且支持链式运算和与赋值运算符组合使用，如 
+```js
+x **= y //等价于 x = x ** y 。例如 
+2 ** 3 //结果为 8 ， 
+2 ** 3 ** 2 //等价于 2 ** (3 ** 2) ，结果为 512 。
+```
 
 ## JavaScript 2017（ES2017）为开发者带来了一系列实用的新特性，具体如下：
  
-- 字符串填充方法：新增 padStart() 和 padEnd() 方法。可以在字符串的开头或结尾填充指定字符，以达到固定长度，如 'es8'.padStart(5, '0'); 结果为 '00es8' 。
- 
-- 对象值遍历与属性描述符获取： Object.values() 返回对象可枚举属性值的数组， Object.entries() 返回键值对组成的二维数组。 Object.getOwnPropertyDescriptors() 可获取对象自有属性的描述符，如 Object.getOwnPropertyDescriptors({a: 1}) 会返回包含 configurable 、 enumerable 等属性的对象。
- 
-- 函数参数尾部逗号：允许在定义函数参数列表或调用函数时使用尾部逗号，如 function fn(a, b,){} 和 fn(1, 2,) 都是合法的。
+- 字符串填充方法：新增 padStart() 和 padEnd() 方法。可以在字符串的开头或结尾填充指定字符，以达到固定长度，如 
+
+```js
+'es8'.padStart(5, '0'); //结果为 '00es8' 。
+```
+- 对象值遍历与属性描述符获取： 
+ * Object.values() 返回对象可枚举属性值的数组， 
+ * Object.entries() 返回键值对组成的二维数组。
+ * Object.getOwnPropertyDescriptors() 可获取对象自有属性的描述符，如 
+```js
+Object.getOwnPropertyDescriptors({a: 1}) 
+```
+会返回包含 configurable 、 enumerable 等属性的对象。
+
+- 函数参数尾部逗号：允许在定义函数参数列表或调用函数时使用尾部逗号，如 
+```js
+function fn(a, b,){} 
+//和 
+fn(1, 2,) 
+//都是合法的。
+```
  
 - 异步函数：引入 async 和 await ， async 用于声明异步函数，函数内部可使用 await 等待 Promise resolve，使异步代码更像同步代码，提高了可读性，如 
 ```js
-async function getData(){ const res = await fetch('url'); return res.json();} 。
+async function getData(){ 
+    const res = await fetch('url'); 
+    return res.json();
+} 
 ```
 - 共享内存与原子操作： SharedArrayBuffer 和 Atomics 用于多线程并发编程，通常在 Web Workers 中使用，可实现共享内存和原子操作，为处理高并发场景提供了支持。
 
@@ -127,14 +186,21 @@ async function getData(){ const res = await fetch('url'); return res.json();} �
 - 异步函数（Async/Await）：让异步编程更直观易读，解决了传统Promise链式调用可读性差、调试难的问题。 async 用于声明异步函数， await 只能在异步函数内使用，用于等待Promise完成。如 
 ```js
 async function getData() { 
-    let response = await fetch('https://example.com/data'); 
-    return response.json(); 
+    let res = await fetch('url'); 
+    return res.json(); 
 } 
 ```
  
 - 共享内存与原子操作（Atomics）：为多线程编程提供支持。共享内存允许不同线程直接访问同一块内存区域，实现高效数据共享和通信。原子操作 Atomics 提供了一组原子方法，用于在共享内存上进行安全的并发操作，避免数据竞争等问题。
  
-- 扩展的正则表达式：支持Unicode属性转义，如 /\p{Script=Greek}/u 可匹配希腊字母。还引入了命名捕获组，如 
+- 扩展的正则表达式：支持Unicode属性转义，如 
+```js
+/\p{Script=Greek}/u 
+```
+可匹配希腊字母。
+
+
+还引入了命名捕获组，如 
 ```js
 const regex = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/; 
 const match = regex.exec('2020-01-01'); 
@@ -154,17 +220,19 @@ const {a, ...rest} = {a: 1, b: 2, c: 3};
  
 - Promise.prototype.finally()：可在Promise链的最后添加一个最终回调，无论Promise是成功还是失败都会执行，用于执行清理操作等，如 
 ```js
-fetch('https://example.com/data')
+fetch('url')
 .then(response => response.json())
 .catch(error => console.error(error))
-.finally(() => console.log('Request completed')); 。
+.finally(() => console.log('Request completed'));
 ``` 
 - 异步迭代器：支持使用 for - await...of 循环来遍历异步可迭代对象，方便处理异步生成的数据序列，如 
 ```js
 async function* asyncGenerator() 
 { 
     yield 1; 
-    await new Promise(resolve => setTimeout(resolve, 1000)); 
+    await new Promise(
+        resolve => setTimeout(resolve, 1000)
+        ); 
     yield 2; 
 } 
 async function main() { 
@@ -183,30 +251,40 @@ async function main() {
 - 字符串方法增强：新增 trimStart() 和 trimEnd() 方法，分别用于去除字符串开头和结尾的空白字符。例如 
 ```js
 let str = "  hello  "; 
-let trimmedStart = str.trimStart(); 
+str.trimStart();  //"hello  "
 ```
-， trimmedStart 的值为 "hello  " 。
+
 
 - 对象创建方法： Object.fromEntries() 方法允许从可迭代的键值对创建对象。如 
 ```js
-const entries = [["name", "Bob"], ["age", 25]]; 
+const entries = [
+    ["name", "Bob"], 
+    ["age", 25]
+    ]; 
 const obj = Object.fromEntries(entries); 
+//obj 为 {name: "Bob", age: 25}
 ```
-， obj 为 {name: "Bob", age: 25} 。
 
-- 可选的catch绑定：在 try...catch 语句中，若不需要使用捕获的错误对象，可省略 catch 的参数，即 try { // 代码 } catch { // 处理代码 } 。
- 
+- 可选的catch绑定：在 try...catch 语句中，若不需要使用捕获的错误对象，可省略 catch 的参数，即 
+```js
+try { 
+    // 代码 
+} catch { 
+    // 处理代码 
+} 
+```
 - 数组方法扩展： flat() 方法用于展平嵌套数组，创建新数组。如 
 ```js
 const arr = [[1, 2], [3, 4]]; 
 const newArr = arr.flat();
+// [1, 2, 3, 4] 
 ```
- ， newArr 为 [1, 2, 3, 4] 。 flatMap() 方法先对数组元素进行映射，再展平结果，如 
+flatMap() 方法先对数组元素进行映射，再展平结果，如 
 ```js
 const nums = [1, 2, 3]; 
 const result = nums.flatMap(x => [x, x * 2]); 
 ``` 
-， result 为 [1, 2, 2, 4, 3, 6] 。
+result 为 [1, 2, 2, 4, 3, 6] 。
 
 - 数组排序修订： Array.sort() 方法被修订，要求浏览器必须使用稳定的排序算法，即排序时相同值元素的相对位置保持不变。
  
@@ -214,22 +292,30 @@ const result = nums.flatMap(x => [x, x * 2]); 
  
 - Function.toString修订： Function.toString() 方法返回的字符串结果更规范，包含函数的参数列表和函数体等完整信息，且不同环境下结果更一致。
  
-- Symbol描述属性： Symbol.prototype 新增 description 属性，可用于访问 Symbol 创建时的描述字符串，如 const sym = Symbol('test'); console.log(sym.description); 会输出 test 。
-
+- Symbol描述属性： Symbol.prototype 新增 description 属性，可用于访问 Symbol 创建时的描述字符串，如
+```js
+const sym = Symbol('test'); 
+console.log(sym.description); //会输出 test 。
+```
 ## JavaScript 2020（ES2020）引入了多个重要特性，提升了代码的编写效率和可读性，具体如下：
  
-BigInt：允许开发者使用更大的整数表示形式进行数据处理，可突破之前JavaScript中整数存储上限（2^53 - 1）的限制，通过在数字末尾附加 n 来表示，如 100n 。
+BigInt：允许开发者使用更大的整数表示形式进行数据处理，可突破之前JavaScript中整数存储上限（2^53 - 1）的限制，通过在数字末尾附加 n 来表示，如 
+```js
+100n 
+```
+。
  
 动态import：支持按需请求代码（代码拆分），可在 if-else 等条件块中根据条件加载模块，且不会污染全局命名空间，如 
 
 ```js
-if (condition) {await import('./module.js');} 。
+if (condition) 
+  await import('./module.js');
 ``` 
 空值合并运算符（??）：用于检查变量是否为 null 或 undefined ，若左侧操作数为 null 或 undefined ，则返回右侧操作数，否则返回左侧操作数，如 
 ```js
-const value = null?? 'default value'; 
+const value = null?? 'default'; 
 ```
-， value 结果为 'default value' 。
+， value 结果为 'default' 。
 
 可选链操作符（?.）：可访问深度嵌套的对象属性、调用对象方法或访问数组元素，而不必担心属性或对象是否存在，若不存在则返回 undefined ，如 
 ```js
@@ -241,7 +327,16 @@ String.prototype.matchAll：是与正则表达式相关的新方法，返回一�
  
 globalThis：为跨平台JavaScript代码提供了统一的全局对象引用，在浏览器中是 window ，在Node.js中是 global ，在web - workers中是 self ，通过 globalThis 可统一获取全局对象。
  
-模块命名空间导出：新增 export * as utils from './utils.mjs' 这样的语法，等效于 import * as utils from './utils.mjs'; export { utils }; ，方便模块导出。
+模块命名空间导出：新增
+```js
+export * as utils from './utils.mjs' 
+```
+这样的语法，等效于 
+```js
+import * as utils from './utils.mjs'; 
+export { utils }; 
+```
+，方便模块导出。
  
 定义明确for - in的顺序：ECMA规范对 for - in 的遍历顺序进行了标准化，使不同环境下该循环遍历对象属性的顺序一致。
  
@@ -265,7 +360,9 @@ const pi = 3.141_592_653_589; 。
  
 - String.prototype.replaceAll：用于替换字符串中所有匹配的子字符串，解决了此前 replace 方法若不使用全局正则表达式，只能替换第一次匹配项的问题。如 
 ```js
-const text = "苹果,苹果,香蕉"; console.log(text.replaceAll("苹果", "橙子")); ，输出为 橙子,橙子,香蕉 。
+const text = "苹果,苹果,香蕉"; 
+console.log(text.replaceAll("苹果", "橙子")); 
+//，输出为 橙子,橙子,香蕉 。
 ```
  
 - 国际化增强：新增 Intl.ListFormat API，提供语言敏感的列表格式化功能，如 
@@ -274,7 +371,8 @@ const list = ['苹果', '香蕉', '橙子'];
 const formatter = new Intl.ListFormat('zh', { style: 'long', type: 'conjunction' }); 
 console.log(formatter.format(list));
 ```
- ，输出为 苹果、香蕉和橙子 。同时 DateTimeFormat 的 dateStyle 和 timeStyle 简化了日期时间的格式化。
+ ，输出为 苹果、香蕉和橙子 。
+同时 DateTimeFormat 的 dateStyle 和 timeStyle 简化了日期时间的格式化。
  
 - WeakRef和FinalizationRegistry： WeakRef 允许创建对对象的弱引用，不会阻止垃圾回收。 FinalizationRegistry 可在垃圾回收器回收对象时执行回调函数，用于更精细的内存管理。
 
@@ -344,7 +442,7 @@ if (Object.hasOwn(person, 'name')) { 
  
 - WeakMap支持Symbol作为键：此前WeakMap只允许对象作为键，ES2023扩展了其功能，允许使用符号（Symbol）作为键，提供了更大的灵活性，且有助于内存管理。
 
-2024年JavaScript随着ECMAScript 2024（ES15）标准的确定，迎来了诸多新特性，同时相关生态系统也有进一步发展。具体如下：
+## JavaScript随着ECMAScript 2024（ES15）标准的确定，迎来了诸多新特性，同时相关生态系统也有进一步发展。具体如下：
  
 语言特性方面
  
@@ -366,7 +464,7 @@ if (Object.hasOwn(person, 'name')) { 
  
 - 工具升级：代码格式化工具如Prettier 3.0和ESLint 9.0发布，Prettier增加了更多格式化选项，ESLint优化了规则配置和错误检查机制，有助于提高代码质量和维护性。
 
-2025年，JavaScript随着ECMAScript 2025标准的批准迎来了多项重要更新。以下是一些主要特性：
+## 2025年，JavaScript随着ECMAScript 2025标准的批准迎来了多项重要更新。以下是一些主要特性：
  
 导入属性与JSON模块：原生支持JSON模块导入，可通过 with {type: 'json'} 声明模块类型。如 
 
@@ -375,29 +473,31 @@ import config from './config.json' with { type: 'json' }; 
 ``` 
 ，无需第三方工具，导入的JSON会自动解析为JavaScript对象，浏览器与Node.js统一支持。
 
-迭代器辅助方法：引入 filter   map   drop   take 等迭代器辅助方法，通过惰性执行实现流式处理。如
+迭代器辅助方法：引入 filter,map,drop,take 等迭代器辅助方法，通过惰性执行实现流式处理。如
 ```js
  const result = arr.values()
-                .filter(x => x.length > 0)
-                .drop(1).take(3)
-                .map(x =>  =${x}= ).toArray(); 
-                
+    .filter(x => x.length > 0)
+    .drop(1).take(3)
+    .map(x =>  =${x}= )
+    .toArray();              
 ```
 ，可有效减少大数据处理时的内存占用。
 
-Set集合方法扩展：新增7个集合方法，支持数学集合运算。如 union(other) 用于求并集， {1,2}.union({2,3}) 结果为 {1,2,3} 。
- 
+Set集合方法扩展：新增7个集合方法，支持数学集合运算。如 union(other) 用于求并集， 
+```js
+{1,2}.union({2,3}) //结果为 {1,2,3} 。
+``` 
 顶级await：JavaScript模块中支持顶级await，可直接在模块顶层使用 await ，简化异步初始化逻辑，无需将代码包裹在异步函数中，如 
 
 ```js
-const data = await fetch('https://api.example.com/data').then(res => res.json());
-
+const data = await fetch('url').then(res => res.json());
 ```
- 
+
 Temporal API：为处理日期和时间提供了现代、全面且可靠的替代方案，可精确处理时区、持续时间和日历系统，如 
 
 ```js
-const now = temporal.now.plainDateTimeIso(); 。
+//nodejs no implemented.
+const now = temporal.now.plainDateTimeIso(); 
 ```
  
 Records和Tuples（第3阶段提案）：引入Records和Tuples，分别为不可变对象和不可变数组，有助于强制实现不可变性和值相等性，如 
