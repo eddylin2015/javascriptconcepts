@@ -4,20 +4,18 @@
 - 严格模式（Strict Mode）： "use strict"; 
 
 - 数组方法增强：新增多个遍历和操作数组的方法，覆盖常见场景：
-
- *  forEach() ：遍历数组并执行回调，替代传统 for 循环；
- *  map() ：对数组元素执行映射操作，返回新数组；
- *  filter() ：筛选满足条件的元素，返回新数组；
- *  reduce() / reduceRight() ：累加数组元素，实现求和、分组等复杂逻辑；
- *  some() / every() ：判断数组是否存在/全部满足条件的元素，返回布尔值；
- *  indexOf() / lastIndexOf() ：查找元素在数组中的索引，支持从末尾反向查找。
+  *  forEach() ：遍历数组并执行回调，替代传统 for 循环；
+  *  map() ：对数组元素执行映射操作，返回新数组；
+  *  filter() ：筛选满足条件的元素，返回新数组；
+  *  reduce() / reduceRight() ：累加数组元素，实现求和、分组等复杂逻辑；
+  *  some() / every() ：判断数组是否存在/全部满足条件的元素，返回布尔值；
+  *  indexOf() / lastIndexOf() ：查找元素在数组中的索引，支持从末尾反向查找。
 
 - 对象操作优化：
-
- *  Object.keys() ：返回对象所有可枚举属性的键名数组；
- *  Object.defineProperty() ：精细化定义对象属性（如设置是否可写、可枚举、可配置）
- *  Object.getPrototypeOf() / Object.setPrototypeOf() ：安全访问和修改对象原型；
- *  Object.create() ：基于指定原型创建新对象，简化原型继承。
+  *  Object.keys() ：返回对象所有可枚举属性的键名数组；
+  *  Object.defineProperty() ：精细化定义对象属性（如设置是否可写、可枚举、可配置）
+  *  Object.getPrototypeOf() / Object.setPrototypeOf() ：安全访问和修改对象原型；
+  *  Object.create() ：基于指定原型创建新对象，简化原型继承。
 
 - JSON原生支持：新增全局 JSON 对象，提供 JSON.parse() 和 JSON.stringify() 
 - 函数绑定方法： Function.prototype.bind() ：创建一个新函数，将原函数的 this 绑定到指定对象，同时预设部分参数，解决异步场景中 this 指向丢失问题。
