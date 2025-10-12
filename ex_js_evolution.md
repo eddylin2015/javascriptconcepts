@@ -297,7 +297,7 @@ result 为 [1, 2, 2, 4, 3, 6] 。
 const sym = Symbol('test'); 
 console.log(sym.description); //会输出 test 。
 ```
-## JavaScript 2020（ES2020）引入了多个重要特性，提升了代码的编写效率和可读性，具体如下：
+## JavaScript 2020（ES2020）重要特性，提升了代码的编写效率和可读性：
  
 BigInt：允许开发者使用更大的整数表示形式进行数据处理，可突破之前JavaScript中整数存储上限（2^53 - 1）的限制，通过在数字末尾附加 n 来表示，如 
 ```js
@@ -376,7 +376,7 @@ console.log(formatter.format(list));
  
 - WeakRef和FinalizationRegistry： WeakRef 允许创建对对象的弱引用，不会阻止垃圾回收。 FinalizationRegistry 可在垃圾回收器回收对象时执行回调函数，用于更精细的内存管理。
 
-## JavaScript 2022（ES2022）为开发者带来了诸多新特性，提升了开发体验与代码质量。具体如下：
+## JavaScript 2022（ES2022）新特性，提升了开发体验与代码质量：
  
 - 顶级await：传统上 await 需在 async 函数内使用，ES2022允许在模块顶层直接使用 await 。例如在获取服务器数据初始化应用状态时，可直接写 
 ```js
@@ -434,7 +434,7 @@ if (Object.hasOwn(person, 'name')) { 
 此外，ES2022还支持类字段声明、私有方法和字段、静态类字段和静态私有方法等特性，让类的定义和使用更加灵活和安全。
 
 
-## JavaScript 2023（ES2023）引入了一些新特性，旨在提升开发效率和代码可读性。具体如下：
+## JavaScript 2023（ES2023）新特性，提升开发效率和代码可读性：
  
 - 数组方法增强：新增 findLast 和 findLastIndex 方法，可从数组末尾开始查找满足条件的元素及其索引。同时还添加了 toReversed 、 toSorted 、 toSpliced 和 with 四个方法，分别用于返回反转、排序、拼接后的数组副本，以及指定索引处元素被替换后的副本，有助于函数式编程，避免副作用。
  
@@ -442,7 +442,7 @@ if (Object.hasOwn(person, 'name')) { 
  
 - WeakMap支持Symbol作为键：此前WeakMap只允许对象作为键，ES2023扩展了其功能，允许使用符号（Symbol）作为键，提供了更大的灵活性，且有助于内存管理。
 
-## JavaScript随着ECMAScript 2024（ES15）标准的确定，迎来了诸多新特性，同时相关生态系统也有进一步发展。具体如下：
+## JavaScript ECMAScript 2024（ES15）标准，新特性，生态系统：
  
 语言特性方面
  
@@ -464,7 +464,7 @@ if (Object.hasOwn(person, 'name')) { 
  
 - 工具升级：代码格式化工具如Prettier 3.0和ESLint 9.0发布，Prettier增加了更多格式化选项，ESLint优化了规则配置和错误检查机制，有助于提高代码质量和维护性。
 
-## 2025年，JavaScript随着ECMAScript 2025标准的批准迎来了多项重要更新。以下是一些主要特性：
+## JavaScript ECMAScript 2025标准的批准重要更新。
  
 导入属性与JSON模块：原生支持JSON模块导入，可通过 with {type: 'json'} 声明模块类型。如 
 
