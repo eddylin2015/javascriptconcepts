@@ -23,11 +23,10 @@ This was a massive update that transformed JavaScript into a more powerful, mode
 ✅ Key Features:
 let and const — Block-scoped variable declarations.
 ```javacript
-
 let x = 10;
 const PI = 3.14;
-Arrow Functions — Shorter syntax and lexical this.
 ```
+Arrow Functions — Shorter syntax and lexical this.
 ```javacript
 
 const add = (a, b) => a + b;
@@ -73,37 +72,28 @@ Modules (import/export)
 // math.```javacript
 export const PI = 3.14;
 
-// main.```javacript
-import { PI } from './math.```javacript';
+// main.js
+import { PI } from './math.js';
 Promises — Native async handling.
 ```
 
 ```javacript
-
-
-fetch(url).then(res => res.```javacripton()).catch(err => ...);
+fetch(url).then(res => res.json()).catch(err => /*...*/);
 ```
-
 
 Map, Set, WeakMap, WeakSet
 ```javacript
-
-
 const map = new Map();
 map.set('key', 'value');
 ```
 
 Symbols — Unique identifiers.
 ```javacript
-
-
 const sym = Symbol('description');
 ```
 
 Iterators & Generators
 ```javacript
-
-
 function* idGenerator() {
   let id = 1;
   while(true) yield id++;
@@ -180,47 +170,44 @@ for await (const chunk of readableStream) { ... }
 
 Promise.prototype.finally()
 ```javacript
-
-
-promise.then(...).catch(...).finally(() => cleanup());
+promise.then(...)
+.catch(...)
+.finally(() => cleanup());
 ```
 
 RegExp Improvements
+
 s (dotAll) flag — . matches newlines.
+
 Named capture groups — /(?<year>\d{4})/
+
 Lookbehind assertions — /(?<=\$)\d+/
+
 🔢 ES2019 (ES10)
 Array.prototype.flat(), flatMap()
 ```javacript
-
-
 [1, [2, [3]]].flat(2); // [1, 2, 3]
 ```
 
 Object.fromEntries()
 ```javacript
-
-
 Object.fromEntries([['a', 1], ['b', 2]]); // {a:1, b:2}
 ```
 
 String.trimStart(), trimEnd()
 ```javacript
-
-
 '  hello  '.trimStart(); // 'hello  '
 ```
 
 Optional catch binding
 ```javacript
-
-
 try { ... } catch { // no (err) needed if unused
   console.log('Error occurred');
 }
 ```
 
 Stable Array.sort()
+
 🌈 ES2020 (ES11)
 BigInt — Arbitrary precision integers.
 ```javacript
@@ -231,40 +218,27 @@ console.log(typeof bigNumber); // "bigint"
 
 Nullish Coalescing Operator (??): Returns the right-hand operand only when the left-hand operand is null or undefined. A much safer alternative to using || for default values (which fails on 0, '', false).
 ```javacript
-
-
 const name = input ?? 'Anonymous'; // only null/undefined
-
 const userInput = '';
 const value = userInput || 'Default'; // 'Default' (might be unexpected)
 const valueSafe = userInput ?? 'Default'; // '' (empty string is preserved)
 ```
-
 Optional Chaining (?.)
 ```javacript
-
-
 user?.profile?.name; // doesn't throw if user or profile is null/undefined
 ```
 
 Promise.allSettled()
 Promise.allSettled(): Takes an array of promises and returns a new promise that resolves after all the input promises have either been fulfilled or rejected. This is different from Promise.all(), which rejects immediately if any promise rejects.
 ```javacript
-
-
 Promise.allSettled(promises); // waits for all to settle (fulfilled/rejected)
-
 const promises = [fetch('/api1'), fetch('/api2')];
 const results = await Promise.allSettled(promises);
 const successful = results.filter(p => p.status === 'fulfilled');
-
 ```
 Dynamic import()
 ```javacript
-
-
 const module = await import('./module.```javacript');
-
 // Inside an async function
 if (userNeedsFeature) {
   const module = await import('./modules/myModule.js');
@@ -273,49 +247,35 @@ if (userNeedsFeature) {
 ```
 globalThis — Unified global object across environments.
 ```javacript
-
-
 globalThis.setTimeout(...); // works in browser, Node, etc.
 ```
 
 import.meta — Metadata about current module.
 📦 ES2021 (ES12)
 
-
-
 Logical Assignment Operators
 ```javacript
-
 // Logical OR Assignment (||=)
 // Assigns only if the current value is falsy
 a ||= b; // Equivalent to: a || (a = b);
-
 // Logical AND Assignment (&&=)
 // Assigns only if the current value is truthy
 a &&= b; // Equivalent to: a && (a = b);
-
 // Nullish Assignment (??=)
 // Assigns only if the current value is null or undefined
 a ??= b; // Equivalent to: a ?? (a = b);
 ```
 String.prototype.replaceAll()
 ```javacript
-
-
 'hello world'.replaceAll('l', 'x'); // 'hexxo worxd'
 ```
 Promise.any()
 ```javacript
-
-
-
 Promise.any(promises); // resolves when any promise fulfills
 ```
 WeakRefs & Finalizers — Advanced memory management (rarely used directly).
 Numeric Separators
 ```javacript
-
-
 const billion = 1_000_000_000;
 ```
 🧪 ES2022 (ES13)
@@ -339,7 +299,7 @@ class MyClass {
 Top-level await — In modules only.
 ```javacript
 
-const data = await fetch('/api/data').then(r => r.```javacripton());
+const data = await fetch('/api/data').then(r => r.json());
 
 // In an ES module (e.g., script type="module")
 const data = await fetch('https://api.example.com/data').then(r => r.json());
