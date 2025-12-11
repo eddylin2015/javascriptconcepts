@@ -11,7 +11,8 @@ Version	Year	Notable Features
 - ES2021	2021	Logical assignments, replaceAll"	 "Promise.any"	 numeric | separators"		
 - ES2022	2022	Class fields, top-level await"	 "at()"	 "hasOwn"	 "cause	
 - ES2023	2023	findLast"	 hashbang support"			
-- ES2024	2024	Array.group"	 "Promise.withResolvers"	 "Object.groupBy		
+- ES2024	2024	Array.group"	 "Promise.withResolvers"	 "Object.groupBy
+- ES2025  2025.6 導入JSON文件, 迭代器輔助方法Array Set等可迭代對象新增map filter等鏈式方法,Set union并 intersection交 difference差, Promise.try() .
 
 Qwen3-Max-Preview
 
@@ -440,3 +441,31 @@ const genB = generatorB();
 console.log([...genB]); // ['x', 'a', 'b', 'y'] (using spread operator)
 ```
 
+🔮 ES2025 (ES16) — Released2025.6 node22+
+- 導入JSON文件,
+```js
+import data from './config.json'
+assert {type:'json'}
+data.apiUrl;
+```
+- 迭代器輔助方法Array Set等可迭代對象新增map filter等鏈式方法,無需先轉數組,性能更好.
+```js
+const numbers=[1,2,3,4]
+const doubledEvents=numbers.values().filter(n=>n%2===0).map(n=>n*2);
+```
+- Set union 并 intersection交 difference差
+```js
+const setA=new Set([]);
+const setB=new Set([]);
+const unionAB=setA.union(setB);
+const intersectAB=setA.intersection(setB);
+const differenceAB=setA.difference(setB);
+```
+- Promise.try() 
+```js
+Promise.try(async()=>{
+  await fetch("");
+}).catch(err=>{
+   console.log(err.message);
+});
+```
