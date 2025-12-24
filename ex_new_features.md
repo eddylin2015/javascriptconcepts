@@ -14,7 +14,6 @@ Version	Year	Notable Features
 - ES2024	2024	Array.group"	 "Promise.withResolvers"	 "Object.groupBy
 - ES2025  2025.6 導入JSON文件, 迭代器輔助方法Array Set等可迭代對象新增map filter等鏈式方法,Set union并 intersection交 difference差, Promise.try() .
 - ES2026  2026.6 计划于 2026 年 6 月发布），目前处于提案阶段
-Qwen3-Max-Preview
 
 JavaScript has evolved significantly over the years, with new features added regularly through ECMAScript (ES) specifications. Below is a comprehensive overview of major JavaScript new features, grouped by ES version and including modern proposals.
 
@@ -533,3 +532,176 @@ function greet(name: string): string {
 Stage 3 的提案通常会被纳入，但非绝对。
 
 可通过 TC39 提案列表 跟踪进展。
+
+1. Inline Await Blocks — Async Without the Narrative Overhead ⏳
+Managing multiple async tasks used to push us toward nested functions or arbitrarily split logic:
+```js
+async function loadProfile() {
+  const user = await getUser();
+  const photos = await getPhotos(user.id);
+  const activity = await getActivity(user.id);
+  return { user, photos, activity };
+}
+```
+ES2026 introduces await-able object blocks, letting you structure async code like data:
+```js
+const profile = await {
+  user: getUser(),
+  photos: getPhotos(user.id),
+  activity: getActivity(user.id)
+};
+```
+It feels less like “async programming” and more like declaring dependencies. 🔗✨
+
+2. Native Type Guards — Structural Checks Without TS 🛡️
+Today, we rely on TypeScript or verbose conditionals:
+```js
+if (
+  typeof item === "object" &&
+  typeof item.label === "string"
+) {}
+```
+ES2026 adds a syntax-level type guard:
+```js
+if (item is { id: number, label: string }) {
+  console.log(item.label);
+}
+```
+Not a TS replacement — but finally, built-in structural intent. 🧩
+
+3. Built-In Observables — Streams Without RxJS 🌊
+Event streams usually require libraries:
+```js
+button.addEventListener("click", handle);
+```
+ES2026 brings observables into the runtime:
+```js
+const clicks = observe(button, "click");
+
+for await (const e of clicks.map(ev => ev.clientY)) {
+  console.log("Clicked at:", e);
+}
+```
+Streams become first-class citizens, not framework territory. 🚦
+
+4. Template Tag Modules — Safe Domain-Specific Strings 🔐
+Template tags like html or sql are everywhere but unofficial.
+
+ES2026 standardizes them:
+```js
+const query = sql`
+  SELECT email FROM users
+  WHERE subscribed = ${true}
+`;
+```
+Now runtime can auto-escape, validate, even compile these templates.
+A huge win for HTML, SQL, CSS, GraphQL. ✅
+
+5. Deep Clone Operator — Structured Clone Without the Ceremony 🧬
+The old hack:
+```js
+const copy = JSON.parse(JSON.stringify(data));
+```
+ES2026 introduces the deep-clone operator:
+```js
+const clone = @@data;
+```
+It peserves:
+
+🗓️ Dates
+📦 Maps/Sets
+🔍 RegExps
+🎛️ Typed arrays
+🧱 Prototypes
+Cloning becomes accurate, not destructive. 💯
+
+6. Scoped With Blocks — Temporary Variables Without Pollution 🧪
+We often create variables used for a few lines:
+```js
+{
+  const tmp = computeValue();
+  next(tmp);
+}
+```
+ES2026 adds scoped with blocks:
+```js
+with {
+  const value = computeValue();
+  next(value);
+}
+```
+Everything inside disappears automatically.
+Cleaner scope hygiene. 🧹✨
+
+7. Decorators Finally Settle Down — Cross-Cutting Logic Without Noise 🪄
+Instead of mixing logging, caching, throttling inside functions…
+```js
+@cache(120)
+@trace
+async function load(id) {
+  return fetch(`/items/${id}`).then(r => r.json());
+}
+```
+Decorators make cross-cutting concerns explicit and external.
+After a decade, JS finally gets them stable. 🎉
+
+8. Explicit Resource Management — Cleanup Without Try/Finally 🧯
+We’ve all forgotten to close something:
+
+database connections
+file handles
+sockets
+ES2026 introduces lifetime blocks:
+```js
+using file = await openFile("./notes.txt");
+
+const content = await file.read();
+```
+When the block ends → resource auto-closes.
+No matter what.
+
+This brings JS closer to languages with real resource semantics. 🏗️
+
+9. Virtual Modules — Import Something That Doesn’t Exist On Disk 🧩
+Sometimes you want runtime-generated configuration:
+```js
+const runtimeConfig = module.virtual("cfg", {
+  version: 2,
+  debug: false
+});
+
+import cfg from "cfg";
+```
+You can now:
+
+mock modules in tests 🧪
+generate logic based on environment 🌡️
+swap behaviors dynamically 🔄
+Small feature, huge architectural implications.
+
+10. Safe Optional Calls — The Missing Link of Optional Chaining 🔗
+Before:
+```js
+user.getProfile().render();
+```
+ES2026 makes this safe:
+```js
+user?.getProfile?.().render?.();
+```
+Every step can fail safely.
+Goodbye to one of JS’s most annoying runtime errors. 👋💥
+
+Why ES2026 Feels Different 🌐
+This isn’t a “shiny toys” release.
+It’s a release asking:
+
+“What if JavaScript were designed today?”
+
+ES2026 reduces:
+
+🧠 mental overhead
+📝 boilerplate
+🧩 accidental complexity
+🔀 fragile async flow
+🛑 unsafe string interpolation
+🧹 forgotten cleanup logic
