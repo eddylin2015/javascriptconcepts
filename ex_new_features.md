@@ -480,14 +480,12 @@ const tuple = #[1, 2, 3];
 ```
 ### 2. Decimal（十进制浮点数）
 解决二进制浮点数精度问题，适合财务计算。
-
 ```js
 const amount = 0.1m + 0.2m;
 console.log(amount); // 0.3m
 ```
 ### 3. Array.fromAsync
 从异步可迭代对象创建数组。
-
 ```js
 async function* asyncGen() {
   yield 1; yield 2;
@@ -529,11 +527,24 @@ function greet(name: string): string {
 📌 注意事项
 以上特性尚未最终确定，可能变化。
 
-Stage 3 的提案通常会被纳入，但非绝对。
+### 9. Native Type Guards  🛡️
+   
+typeof _var /_obj instanceof TObject/ Array.isArray(_var)
 
-可通过 TC39 提案列表 跟踪进展。
+```js
+if (
+  typeof item === "object" &&
+  typeof item.label === "string"
+) {}
+```
+ES2026 adds a syntax-level type guard:
+```js
+if (item is { id: number>0, label: string }) {
+  console.log(item.label);
+}
+```
 
-1. Inline Await Blocks — Async Without the Narrative Overhead ⏳
+### 10. Inline Await Blocks — Async Without the Narrative Overhead ⏳
 Managing multiple async tasks used to push us toward nested functions or arbitrarily split logic:
 ```js
 async function loadProfile() {
@@ -553,24 +564,13 @@ const profile = await {
 ```
 It feels less like “async programming” and more like declaring dependencies. 🔗✨
 
-2. Native Type Guards — Structural Checks Without TS 🛡️
-Today, we rely on TypeScript or verbose conditionals:
-```js
-if (
-  typeof item === "object" &&
-  typeof item.label === "string"
-) {}
-```
-ES2026 adds a syntax-level type guard:
-```js
-if (item is { id: number, label: string }) {
-  console.log(item.label);
-}
-```
-Not a TS replacement — but finally, built-in structural intent. 🧩
-
-3. Built-In Observables — Streams Without RxJS 🌊
+### 11. Built-In Observables — Streams Without RxJS 🌊
 Event streams usually require libraries:
+```js
+const stream= fromEvent(document,'click')
+              .pipe(map(e=>e.clientX))
+              .subscrible(console.log);
+```
 ```js
 button.addEventListener("click", handle);
 ```
@@ -584,7 +584,7 @@ for await (const e of clicks.map(ev => ev.clientY)) {
 ```
 Streams become first-class citizens, not framework territory. 🚦
 
-4. Template Tag Modules — Safe Domain-Specific Strings 🔐
+### 12. Template Tag Modules — Safe Domain-Specific Strings 🔐
 Template tags like html or sql are everywhere but unofficial.
 
 ES2026 standardizes them:
@@ -597,7 +597,7 @@ const query = sql`
 Now runtime can auto-escape, validate, even compile these templates.
 A huge win for HTML, SQL, CSS, GraphQL. ✅
 
-5. Deep Clone Operator — Structured Clone Without the Ceremony 🧬
+### 13. Deep Clone Operator — Structured Clone Without the Ceremony 🧬
 The old hack:
 ```js
 const copy = JSON.parse(JSON.stringify(data));
@@ -615,7 +615,7 @@ It peserves:
 🧱 Prototypes
 Cloning becomes accurate, not destructive. 💯
 
-6. Scoped With Blocks — Temporary Variables Without Pollution 🧪
+### 14. Scoped With Blocks — Temporary Variables Without Pollution 🧪
 We often create variables used for a few lines:
 ```js
 {
@@ -633,7 +633,7 @@ with {
 Everything inside disappears automatically.
 Cleaner scope hygiene. 🧹✨
 
-7. Decorators Finally Settle Down — Cross-Cutting Logic Without Noise 🪄
+### 15. Decorators Finally Settle Down — Cross-Cutting Logic Without Noise 🪄
 Instead of mixing logging, caching, throttling inside functions…
 ```js
 @cache(120)
@@ -645,7 +645,7 @@ async function load(id) {
 Decorators make cross-cutting concerns explicit and external.
 After a decade, JS finally gets them stable. 🎉
 
-8. Explicit Resource Management — Cleanup Without Try/Finally 🧯
+### 16. Explicit Resource Management — Cleanup Without Try/Finally 🧯
 We’ve all forgotten to close something:
 
 database connections
@@ -657,12 +657,16 @@ using file = await openFile("./notes.txt");
 
 const content = await file.read();
 ```
+```js
+using connectoin= await connectDB();
+const data=await connecton.query('SELECT * FROM TBL;')
+```
 When the block ends → resource auto-closes.
 No matter what.
 
 This brings JS closer to languages with real resource semantics. 🏗️
 
-9. Virtual Modules — Import Something That Doesn’t Exist On Disk 🧩
+### 17. Virtual Modules — Import Something That Doesn’t Exist On Disk 🧩
 Sometimes you want runtime-generated configuration:
 ```js
 const runtimeConfig = module.virtual("cfg", {
@@ -679,7 +683,7 @@ generate logic based on environment 🌡️
 swap behaviors dynamically 🔄
 Small feature, huge architectural implications.
 
-10. Safe Optional Calls — The Missing Link of Optional Chaining 🔗
+### 18. Safe Optional Calls — The Missing Link of Optional Chaining 🔗
 Before:
 ```js
 user.getProfile().render();
@@ -692,13 +696,6 @@ Every step can fail safely.
 Goodbye to one of JS’s most annoying runtime errors. 👋💥
 
 Why ES2026 Feels Different 🌐
-This isn’t a “shiny toys” release.
-It’s a release asking:
-
-“What if JavaScript were designed today?”
-
-ES2026 reduces:
-
 🧠 mental overhead
 📝 boilerplate
 🧩 accidental complexity
