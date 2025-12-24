@@ -13,7 +13,7 @@ Version	Year	Notable Features
 - ES2023	2023	findLast"	 hashbang support"			
 - ES2024	2024	Array.group"	 "Promise.withResolvers"	 "Object.groupBy
 - ES2025  2025.6 導入JSON文件, 迭代器輔助方法Array Set等可迭代對象新增map filter等鏈式方法,Set union并 intersection交 difference差, Promise.try() .
-
+- ES2026  2026.6 计划于 2026 年 6 月发布），目前处于提案阶段
 Qwen3-Max-Preview
 
 JavaScript has evolved significantly over the years, with new features added regularly through ECMAScript (ES) specifications. Below is a comprehensive overview of major JavaScript new features, grouped by ES version and including modern proposals.
@@ -469,3 +469,67 @@ Promise.try(async()=>{
    console.log(err.message);
 });
 ```
+## 🔥 ES2026 可能包含的新特性
+### 1. Record & Tuple（记录与元组）
+不可变的数据结构，用于深度比较和共享值。
+
+```js
+// 记录（Record）
+const record = #{ x: 1, y: 2 };
+// 元组（Tuple）
+const tuple = #[1, 2, 3];
+```
+### 2. Decimal（十进制浮点数）
+解决二进制浮点数精度问题，适合财务计算。
+
+```js
+const amount = 0.1m + 0.2m;
+console.log(amount); // 0.3m
+```
+### 3. Array.fromAsync
+从异步可迭代对象创建数组。
+
+```js
+async function* asyncGen() {
+  yield 1; yield 2;
+}
+const arr = await Array.fromAsync(asyncGen());
+```
+### 4. Set 和 Map 的新方法
+Set.prototype.intersection()
+
+Map.prototype.merge()
+增强集合操作能力。
+
+### 5. String.cooked
+标签模板函数，用于转义处理。
+
+```js
+String.cooked`Hello\nWorld`; // 不转义 \n
+```
+### 6. 异步上下文（Async Context）
+跟踪异步执行上下文，用于日志、监控等。
+
+### 7. 类型注解（Type Annotations）
+注意：这只是运行时忽略的注释，不是静态类型，主要为工具链设计。
+
+```js
+function greet(name: string): string {
+  return `Hello, ${name}!`;
+}
+```
+### 8. 明确资源管理（Explicit Resource Management）
+使用 using 自动释放资源（已进入 ES2024）。
+
+```js
+{
+  using file = openFile();
+  // 自动关闭
+}
+```
+📌 注意事项
+以上特性尚未最终确定，可能变化。
+
+Stage 3 的提案通常会被纳入，但非绝对。
+
+可通过 TC39 提案列表 跟踪进展。
