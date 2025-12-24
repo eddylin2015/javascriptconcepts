@@ -478,11 +478,26 @@ const record = #{ x: 1, y: 2 };
 // 元组（Tuple）
 const tuple = #[1, 2, 3];
 ```
-### 2. Decimal（十进制浮点数）
+### 2. Decimal（十进制浮点数）/ Date
 解决二进制浮点数精度问题，适合财务计算。
 ```js
 const amount = 0.1m + 0.2m;
 console.log(amount); // 0.3m
+const items=[{name:"",price:19.9m},{name:"",price:29.9m}];
+let total=0m;
+items.forEach(item=>total+=item.price);
+/*
+Temporal.PlainDate
+Temporal.PlainTime
+Temporal.PlainDateTime
+Temporal.ZonedDateTime
+Temporal.Duration
+*/
+const departure=Temporal.ZonedDateTime.from("2025-06-01T08:30:00+08:00[Asia/Shaghai]");
+const arrival  =Temporal.ZonedDateTime.from("2025-06-01T08:30:00+02:00[Europe/Paris]");
+const duration=departure.until(arrival);
+duration.toString();  // 'PT11J45M'
+duration.total({unit:'hour'}); //11.75 hour
 ```
 ### 3. Array.fromAsync
 从异步可迭代对象创建数组。
