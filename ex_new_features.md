@@ -478,7 +478,7 @@ const record = #{ x: 1, y: 2 };
 // 元组（Tuple）
 const tuple = #[1, 2, 3];
 ```
-### 2. Decimal（十进制浮点数）/ Date
+### 2. Decimal（十进制浮点数）/ Date / btoa atob vs Uint8Array/ JSON.parse BigInt/import defer/Intl.Local
 解决二进制浮点数精度问题，适合财务计算。
 ```js
 const amount = 0.1m + 0.2m;
@@ -486,6 +486,19 @@ console.log(amount); // 0.3m
 const items=[{name:"",price:19.9m},{name:"",price:29.9m}];
 let total=0m;
 items.forEach(item=>total+=item.price);
+//Question 
+Math.sum([19.9,29.8,15.3]) // 49.7 49.6999
+//solution 1
+Math.sum([199,298,153])/10
+//solution 2
+Math.sumPrecise([19.9,29.8,15.3])
+const data=Array.from({lenght:1000000}),()=>Math.random()*100);
+console.time('normal')
+data.ruduce((n,total)=>total+=n,0); //data.ForEach()
+console.timeEnd('normal')
+console.time('Precise')
+Math.sumPrecise(data)
+console.timeEnd('Precise')
 /*
 Temporal.PlainDate
 Temporal.PlainTime
@@ -498,6 +511,68 @@ const arrival  =Temporal.ZonedDateTime.from("2025-06-01T08:30:00+02:00[Europe/Pa
 const duration=departure.until(arrival);
 duration.toString();  // 'PT11J45M'
 duration.total({unit:'hour'}); //11.75 hour
+//
+const data=new TextEncoder().encode('中文'）。toBase64()；
+const decoded=Unit8Array.fromBase64(data);
+const text=new TextDecoder().decode(decoded);
+//
+fileInput.addEventListener('change',async (e){
+const file=e.target.files[0];
+const buffer=await file.arrrayBuffer();
+const uint8=new Uint8Array(buffer);
+const base64=uint8.toBase64();
+img.src=`data:image/png:base64,${base64}`;
+});
+//
+const data=new Uint8Array([1,2]);
+ws.send(JSON.stringfy({
+type:'binary',
+data:data.toBase64()
+}));
+ws.onmessage=(e)=>{
+const msg=JSON.parse(e.data);
+const binary=Uint8Array.fromBase64(msg.data);
+processBinaryData(binary);
+//
+const randomBytes=crypto.getRandomValues(new UintArray());
+const token=randomBytes.toBase64();
+localStorage.setItem('authToken',token);
+//
+const storedToken=localStorage.getItem('authToken');
+const bytes=Uint8array.fromBase64(storedToken);
+//
+const response={"userId":1234568990123456789,"balance":9999999999999999999.99}
+function safeParse(response){
+JSON.parse(response,(key,val,ctx)=>{
+if(key==='userId' && typeof val==='number')
+  return BigInt(ctx.source);
+if(key==='balance' && typeof val==='number')
+  return parseFloat(ctx.source);
+return val;
+});
+}
+//
+let utils;
+setTimeout(async()=>{
+utils=await import('./utils.js');
+},5000);
+//
+import defer * as utils from './utils.js';
+//
+const zhCN=new Intl.Locale('zh-CN');
+zhCN.weekInfo.firstDay
+zhCN.weekInfo.weekend
+zhCN.weekInfo.minimalDays
+//Error.isError()
+//Map.upsert()
+const cache=new Map();
+function inc(key){
+if(cache.has(key)){
+   cache.set(key,cache.get(key)+1)
+}else{ cache.set(key,1);}
+}
+cache.upsert(key,{update:(v)=>v+1,insert:1});
+}
 ```
 ### 3. Array.fromAsync
 从异步可迭代对象创建数组。
@@ -539,6 +614,41 @@ function greet(name: string): string {
   // 自动关闭
 }
 ```
+### 16. Explicit Resource Management — Cleanup Without Try/Finally 🧯
+We’ve all forgotten to close something:
+
+- database connections
+- file handles
+- sockets
+
+```js
+using file = await openFile("./notes.txt");
+const content = await file.read();
+```
+```js
+using connectoin= await connectDB();
+const data=await connecton.query('SELECT * FROM USER WHERE id=?',[id])
+```
+When the block ends → resource auto-closes.
+
+```js
+using db=new DatabaseConn(cfg);
+const result=await db.query(sql,params);
+
+class DatabaseConn{
+constructor (config){
+this.conn=createConnection(confg);
+}
+query(sql,params){
+return this.conn.execute(sql,params);
+}
+[Symbol.dispose](){
+   this.conn.close();
+}
+}
+```
+
+This brings JS closer to languages with real resource semantics. 🏗️
 📌 注意事项
 以上特性尚未最终确定，可能变化。
 
@@ -596,6 +706,35 @@ const clicks = observe(button, "click");
 for await (const e of clicks.map(ev => ev.clientY)) {
   console.log("Clicked at:", e);
 }
+```
+
+```js
+async  function* fetchAllPages(url){
+let page=1;
+while(true)
+{
+const res=await fetch(``);
+const data=await res.json();
+if(data.items.length===0) break;
+yield* data.items;
+page++;
+}
+}
+const items=[]
+forawait (const item of fetchAllPages(url)
+  items.push(item)
+const items=await Array.fromAysnc(fetchAllPages(url))
+//Iterator.concat()
+funtion* mergeIterators(...ites)
+{
+  for(let iter of ites)
+      yield* iter;
+}
+//
+npm ls | grep -E 'moment|lodash|decimal'
+performance.measure('feature-X');
+if(typeof Temporal !=='undefined') let now=Temporal.Now.plainDateTimeISO() else let now=new Date();
+
 ```
 Streams become first-class citizens, not framework territory. 🚦
 
@@ -660,26 +799,7 @@ async function load(id) {
 Decorators make cross-cutting concerns explicit and external.
 After a decade, JS finally gets them stable. 🎉
 
-### 16. Explicit Resource Management — Cleanup Without Try/Finally 🧯
-We’ve all forgotten to close something:
 
-database connections
-file handles
-sockets
-ES2026 introduces lifetime blocks:
-```js
-using file = await openFile("./notes.txt");
-
-const content = await file.read();
-```
-```js
-using connectoin= await connectDB();
-const data=await connecton.query('SELECT * FROM TBL;')
-```
-When the block ends → resource auto-closes.
-No matter what.
-
-This brings JS closer to languages with real resource semantics. 🏗️
 
 ### 17. Virtual Modules — Import Something That Doesn’t Exist On Disk 🧩
 Sometimes you want runtime-generated configuration:
